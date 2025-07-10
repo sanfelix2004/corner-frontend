@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="shortcut icon" href="images/favicon.png" type="">
+
+  <title> Corner </title>
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <!--owl slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <!-- nice select  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
+  <!-- font awesome style -->
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+  <div class="hero_area">
+    <div class="bg-box">
+      <img src="images/hero-bg.jpg" alt="">
+    </div>
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+          <a class="navbar-brand" href="index.html">
+            <span>
+              Cortner Pub
+            </span>
+          </a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""> </span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="#index.html">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#menu">Menu</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#noi">Noi</a>
+              </li>
+              <!-- Pagina per creare una nuova prenotazione -->
+              <li class="nav-item">
+                <a class="nav-link" href="#book">Prenota un tavolo</a>
+              </li>
+              <!-- Nuova pagina per vedere/modificare/cancellare le proprie prenotazioni -->
+              <li class="nav-item">
+                <a class="nav-link" href="#myReservationsSection">Le mie prenotazioni</a>
+              </li>
+            </ul>
+            <div class="user_option">
+              <a href="https://www.justeat.it/restaurants-corner-hamburgeria-giovinazzo/menu" class="order_online">
+                Ordina a casa
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+    <!-- slider section -->
+  <section class="slider_section">
+  <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="container">
+          <div class="row">
+            <!-- qui la colonna che sta a sinistra -->
+            <div class="col-md-7 col-lg-6">
+              <div class="detail-box slider-overlay">
+                <h1>Corner Hamburgeria</h1>
+                <p>
+                  Nel cuore di Giovinazzo, ogni nostro hamburger è realizzato artigianalmente
+                  con carni selezionate e ingredienti freschi di prima scelta. Vieni a scoprire
+                  il gusto autentico dei nostri panini, frutto di passione e creatività, per un’esperienza
+                  di street food indimenticabile.
+                </p>
+                <div class="btn-box d-flex">
+                  <a href="#menu" class="btn1 mr-3">Vedi il Menu</a>
+                  <a href="#book" class="btn1">Prenota</a>
+                </div>
+              </div>
+            </div>
+            <!-- potresti aggiungere un'immagine o mantenere vuoto il col-md-6 a destra -->
+            <div class="col-md-5 col-lg-6">
+              <!-- spazio libero o immagine -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- altri item... -->
+    </div>
+  </div>
+</section>
+
+
+    <!-- end slider section -->
+  </div>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#FFBE33" fill-opacity="0.45" d="M0,192L30,176C60,160,120,128,180,106.7C240,85,300,75,360,106.7C420,139,480,213,540,240C600,267,660,245,720,202.7C780,160,840,96,900,112C960,128,1020,224,1080,218.7C1140,213,1200,107,1260,58.7C1320,11,1380,21,1410,26.7L1440,32L1440,0L1410,0C1380,0,1320,0,1260,0C1200,0,1140,0,1080,0C1020,0,960,0,900,0C840,0,780,0,720,0C660,0,600,0,540,0C480,0,420,0,360,0C300,0,240,0,180,0C120,0,60,0,30,0L0,0Z"></path></svg>
+
+  <!-- food section -->
+<br>
+<br>
+  <section id="menu" class="food_section layout_padding-bottom">
+    
+    <div class="container">
+      
+      <div class="heading_container heading_center">
+        
+        <h2>
+          Il nostro Menù
+          
+        </h2>
+      </div>
+
+    <ul class="filters_menu" id="categoryFilters">
+      <!-- categorie generate dinamicamente -->
+    </ul>
+
+      <div class="filters-content">
+      <div class="row grid" id="menuItemsContainer">
+        <!-- piatti generati dinamicamente -->
+      </div>
+    </div>
+    
+      </div>
+  </section>
+
+  <!-- end food section -->
+
+  <!-- about section -->
+
+  <section id="noi" class="about_section layout_padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="img-box">
+          <img src="images/about-img.png" alt="">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="detail-box">
+          <div class="heading_container">
+            <h2>
+              Noi siamo Corner
+            </h2>
+          </div>
+          <p>
+            Nel nostro pub ogni prodotto racconta una storia di cura e passione. Selezioniamo personalmente le migliori carni, lavorate artigianalmente ogni mattina dai nostri mastri macellai, e abbiniamo impasti e ingredienti freschissimi, preparati in casa con ricette originali. Dalla scelta delle materie prime fino al tocco finale, ci impegniamo a offrire sapori autentici che esaltano la qualità e il lavoro del nostro team.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- end about section -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#FFBE33" fill-opacity="0.45" d="M0,192L30,176C60,160,120,128,180,106.7C240,85,300,75,360,106.7C420,139,480,213,540,240C600,267,660,245,720,202.7C780,160,840,96,900,112C960,128,1020,224,1080,218.7C1140,213,1200,107,1260,58.7C1320,11,1380,21,1410,26.7L1440,32L1440,0L1410,0C1380,0,1320,0,1260,0C1200,0,1140,0,1080,0C1020,0,960,0,900,0C840,0,780,0,720,0C660,0,600,0,540,0C480,0,420,0,360,0C300,0,240,0,180,0C120,0,60,0,30,0L0,0Z"></path></svg>
+
+ <!-- book section -->
+<section id="book" class="book_section layout_padding">
+  <div class="container">
+    <div class="heading_container heading_center">
+      <h2>Prenota un tavolo</h2>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="form_container">
+          <form id="reservationForm">
+            <div class="mb-3">
+              <input id="resName" type="text" class="form-control" placeholder="Nome" required />
+            </div>
+            <div class="mb-3">
+              <input id="resPhone" type="text" class="form-control" placeholder="Numero di telefono" required />
+            </div>
+            <div class="mb-3">
+              <input id="resPeople" type="number" class="form-control" placeholder="Numero di persone" min="1" required />
+            </div>
+            <div class="mb-3">
+              <input id="resDate" type="date" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <select id="resTime" class="form-control nice-select wide" required>
+                <option value="" disabled selected>Seleziona ora</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <textarea id="resNote" class="form-control" placeholder="Note (optional)"></textarea>
+            </div>
+            <div class="btn_box text-center">
+              <button type="submit" class="btn">Prenota</button>
+            </div>
+            <p id="resMessage" class="mt-3 text-center"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- my reservations section -->
+<section id="myReservationsSection" class="book_section layout_padding">
+  <div class="container">
+    <div class="heading_container heading_center">
+      <h2>Le mie Prenotazioni</h2>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="form_container mb-4">
+          <form id="lookupForm">
+            <div class="mb-3">
+              <input id="lookupPhone" type="text" class="form-control" placeholder="Inserisci il tuo numero di telefono" required />
+            </div>
+            <div class="btn_box text-center">
+              <button type="submit" class="btn">Cerca Prenotazioni</button>
+            </div>
+          </form>
+        </div>
+        <ul id="reservationsList" class="list-group">
+          <!-- qui appariranno le prenotazioni -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- client section -->
+
+  <section class="location_section layout_padding-bottom">
+  <div class="container">
+    <div class="heading_container heading_center mb_45">
+      <h2>Dove ci troviamo</h2>
+    </div>
+    <br>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="location_box text-center p-4">
+          <h5 class="location_name">Corner Hamburgeria</h5>
+          <p class="location_address mb-1">Piazza Duomo 58</p>
+          <p class="location_zip mb-3">70054 Giovinazzo (BA)</p>
+          <div class="col-md-6">
+        <div class="map_container">
+            <div id="googleMap"></div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- end client section -->
+<!-- footer section -->
+<footer class="footer_section">
+  <div class="container">
+    <div class="row">
+      <!-- Contatti -->
+      <div class="col-md-4 footer-col">
+        <div class="footer_contact">
+          <h4>Contatti</h4>
+          <div class="contact_link_box">
+            <a href="#">
+              <i class="fa fa-map-marker" aria-hidden="true"></i>
+              <span>Piazza Duomo 58, 70054 Giovinazzo (BA)</span>
+            </a>
+            <a href="tel:+39 334 592 6223">
+              <i class="fa fa-phone" aria-hidden="true"></i>
+              <span>+39 334 592 6223</span>
+            </a>
+            <a href="mailto:info@cornerhamburgeria.it">
+              <i class="fa fa-envelope" aria-hidden="true"></i>
+              <span>cornersnc@gmail.com</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Logo e descrizione -->
+      <div class="col-md-4 footer-col text-center">
+        <a href="index.html" class="footer-logo">Corner Hamburgeria</a>
+        <p>
+          Dove la passione per la carne incontra l’artigianalità italiana: panini e hamburger preparati ogni giorno con ingredienti selezionati.
+        </p>
+        <div class="footer_social">
+          <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+          <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <!-- Orari -->
+      <div class="col-md-4 footer-col">
+        <h4>Orari di apertura</h4>
+        <p>Da Martedì a Domenica</p>
+        <p>18:00 – 00:00</p>
+      </div>
+    </div>
+    <div class="footer-info text-center mt-4">
+      <p>
+        &copy; <span id="displayYear"></span> Corner Hamburgeria — Tutti i diritti riservati.
+      </p>
+    </div>
+  </div>
+</footer>
+<!-- footer section -->
+
+
+  <!-- jQery -->
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <!-- popper js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <!-- bootstrap js -->
+  <script src="js/bootstrap.js"></script>
+  <!-- owl slider -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <!-- isotope js -->
+  <script src="https://unpkg.com/isotope-layout@3.0.4/dist/isotope.pkgd.min.js"></script>
+  <!-- nice select -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js"></script>
+  <!-- custom js -->
+  <script src="js/custom.js"></script>
+  <!-- Google Map -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
+  </script>
+  <!-- End Google Map -->
+
+</body>
+
+</html>
