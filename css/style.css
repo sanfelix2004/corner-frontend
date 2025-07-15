@@ -1077,4 +1077,22 @@ a:focus {
   gap: 20px;
   margin-bottom: 100px; /* SPINGE IN GIÙ il resto del contenuto */
 }
-
+.custom-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #333;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  opacity: 0;
+  z-index: 9999;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(20px);
+  pointer-events: none;
+  font-size: 0.95rem;
+}
+.custom-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}

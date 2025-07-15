@@ -300,3 +300,18 @@ function myMap() {
     infoWindow.open(map, marker);
   });
 }
+function showToast(message, isError = false) {
+  const toast = document.getElementById('customToast');
+  toast.textContent = message;
+  toast.style.backgroundColor = isError ? '#dc3545' : '#28a745'; // rosso o verde
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const dateInput = document.getElementById('resDate');
+  const today = new Date().toISOString().split('T')[0]; // formato yyyy-mm-dd
+  dateInput.setAttribute('min', today);
+});
