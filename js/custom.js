@@ -1,32 +1,31 @@
 // === INIZIO BLOCCO PER IL MENU DINAMICO ===
-const API_URL = 'http://localhost:8080/api/menu';
+const API_URL       = 'http://localhost:8080/api/menu';
+const EVIDENZA_URL  = 'http://localhost:8080/api/in_evidenza';
 const container = document.getElementById('menuItemsContainer');
 const filters   = document.getElementById('categoryFilters');
-
+let featuredIds     = [];
 let allItems = [];
 
 function renderFilters(categories) {
-  // non creiamo più il li "Tutti" qui
   filters.innerHTML = '';
 
-  // ricreiamo però prima il bottone "In Evidenza", se esiste fra le categorie
-  if (categories.includes('In Evidenza')) {
+  // se ho featuredIds, metto prima In Evidenza
+  if (featuredIds.length > 0) {
     const li = document.createElement('li');
     li.setAttribute('data-filter', 'In Evidenza');
     li.innerText = 'In Evidenza';
     filters.appendChild(li);
   }
 
-  // poi tutti gli altri
+  // poi tutte le altre categorie
   categories.forEach(cat => {
-    if (cat === 'In Evidenza') return; // l'abbiamo già aggiunto
     const li = document.createElement('li');
     li.setAttribute('data-filter', cat);
     li.innerText = cat;
     filters.appendChild(li);
   });
 
-  // click handler
+  // click handler identico
   filters.querySelectorAll('li').forEach(btn => {
     btn.addEventListener('click', () => {
       filters.querySelectorAll('li').forEach(li => li.classList.remove('active'));
@@ -38,32 +37,38 @@ function renderFilters(categories) {
 
 function renderMenuItems(filter = 'In Evidenza') {
   container.innerHTML = '';
-  const toShow = filter === 'all'
-    ? allItems
-    : allItems.filter(i => i.categoria === filter);
+  let toShow;
+
+  if (filter === 'In Evidenza') {
+    // mostro solo gli item il cui id è in featuredIds
+    toShow = allItems.filter(i => featuredIds.includes(i.id));
+  } else {
+    toShow = allItems.filter(i => i.categoria === filter);
+  }
 
   toShow.forEach(item => {
-   const card = `
-  <div class="col-sm-6 col-lg-4 all ${item.categoria}">
-    <div class="box">
-      <div class="img-box">
-        <img src="${item.imageUrl}" alt="${item.titolo}" />
-      </div>
-      <div class="detail-box">
-        <h5>${item.titolo}</h5>
-        <p>${item.descrizione || ''}</p>
-        <div class="options">
-          <h6>€${item.prezzo.toFixed(2)}</h6>
-          <a href="#"><i class="fa fa-shopping-cart"></i></a>
+    const card = `
+      <div class="col-sm-6 col-lg-4 all ${item.categoria}">
+        <div class="box">
+          <div class="img-box position-relative">
+            <img src="${item.imageUrl}" alt="${item.titolo}" />
+            ${featuredIds.includes(item.id)
+              ? '<span class="badge badge-warning position-absolute" style="top:8px;right:8px;">★</span>'
+              : ''}
+          </div>
+          <div class="detail-box">
+            <h5>${item.titolo}</h5>
+            <p>${item.descrizione || ''}</p>
+            <div class="options">
+              <h6>€${item.prezzo.toFixed(2)}</h6>
+              <a href="#"><i class="fa fa-shopping-cart"></i></a>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>`;
-
+      </div>`;
     container.insertAdjacentHTML('beforeend', card);
   });
 
-  // se isotope è già pronto, ricalcola il layout
   if (window.$grid) {
     $grid.isotope('reloadItems').isotope();
   }
@@ -71,26 +76,29 @@ function renderMenuItems(filter = 'In Evidenza') {
 
 async function loadMenu() {
   try {
-    const res  = await fetch(API_URL);
-    const data = await res.json();
-    allItems = data;
+    // parallel fetch di menu e highlights
+    const [menuRes, evRes] = await Promise.all([
+      fetch(API_URL),
+      fetch(EVIDENZA_URL)
+    ]);
+    const [menuData, highlights] = await Promise.all([
+      menuRes.json(),
+      evRes.json()
+    ]);
+
+    allItems    = menuData;
+    featuredIds = highlights.map(h => h.itemId);
 
     // estraiamo le categorie uniche
-    const cats = [...new Set(data.map(i => i.categoria))];
-
+    const cats = [...new Set(menuData.map(i => i.categoria))];
     renderFilters(cats);
 
-    // applichiamo subito "In Evidenza"
+    // avvia subito con “In Evidenza” se ce n’è almeno uno
     const defaultBtn = filters.querySelector('[data-filter="In Evidenza"]');
     if (defaultBtn) {
       defaultBtn.classList.add('active');
       renderMenuItems('In Evidenza');
     }
-
-    // rimuoviamo completamente il pulsante "Tutti" (se era stato creato da qualche parte)
-    const allBtn = filters.querySelector('[data-filter="all"]');
-    if (allBtn) allBtn.remove();
-
   } catch (err) {
     container.innerHTML = '<p>Errore nel caricamento del menu.</p>';
     console.error(err);
