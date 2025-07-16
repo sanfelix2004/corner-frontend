@@ -1,3 +1,7 @@
+// Base URL centralizzata (usa "" per prod se FE e BE sono sullo stesso dominio)
+const BASE_URL = window.location.hostname.includes('localhost')
+  ? 'http://localhost:8080'
+  : 'https://corner-pub-backend.onrender.com';  // <-- cambia con la tua URL Render reale
 // === INIZIO BLOCCO PER IL MENU DINAMICO ===
 const API_URL       = `${BASE_URL}/api/menu`;
 const EVIDENZA_URL  = `${BASE_URL}/api/in_evidenza`;
@@ -6,10 +10,7 @@ const RES_TIMES_API = `${RES_API}/available-times`;
 
 const container = document.getElementById('menuItemsContainer');
 const filters   = document.getElementById('categoryFilters');
-// Base URL centralizzata (usa "" per prod se FE e BE sono sullo stesso dominio)
-const BASE_URL = window.location.hostname.includes('localhost')
-  ? 'http://localhost:8080'
-  : 'https://corner-pub-backend.onrender.com';  // <-- cambia con la tua URL Render reale
+
 
 let featuredIds     = [];
 let allItems = [];
