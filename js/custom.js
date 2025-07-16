@@ -1,8 +1,16 @@
 // === INIZIO BLOCCO PER IL MENU DINAMICO ===
-const API_URL       = 'http://localhost:8080/api/menu';
-const EVIDENZA_URL  = 'http://localhost:8080/api/in_evidenza';
+const API_URL       = `${BASE_URL}/api/menu`;
+const EVIDENZA_URL  = `${BASE_URL}/api/in_evidenza`;
+const RES_API       = `${BASE_URL}/api/reservations`;
+const RES_TIMES_API = `${RES_API}/available-times`;
+
 const container = document.getElementById('menuItemsContainer');
 const filters   = document.getElementById('categoryFilters');
+// Base URL centralizzata (usa "" per prod se FE e BE sono sullo stesso dominio)
+const BASE_URL = window.location.hostname.includes('localhost')
+  ? 'http://localhost:8080'
+  : 'https://corner-pub-backend.onrender.com';  // <-- cambia con la tua URL Render reale
+
 let featuredIds     = [];
 let allItems = [];
 
@@ -118,8 +126,6 @@ getYear();
 // ——————————————————————————————
 // Caricamento orari disponibili dal BE
 // ——————————————————————————————
-const RES_API        = 'http://localhost:8080/api/reservations';
-const RES_TIMES_API  = RES_API + '/available-times';  // ?date=YYYY-MM-DD
 
 const form        = document.getElementById('reservationForm');
 const dateInput   = document.getElementById('resDate');
