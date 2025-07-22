@@ -1,7 +1,7 @@
 // Base URL centralizzata (usa "" per prod se FE e BE sono sullo stesso dominio)
 const BASE_URL = window.location.hostname.includes('localhost')
   ? 'http://localhost:8080'
-  : 'https://corner-pub-backend-1.onrender.com'; // <-- questo deve combaciare
+  : 'https://corner-pub-backend.onrender.com'; // <-- questo deve combaciare
 
 // === INIZIO BLOCCO PER IL MENU DINAMICO ===
 const API_URL       = `${BASE_URL}/api/menu`;
