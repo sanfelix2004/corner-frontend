@@ -1,5 +1,5 @@
 // Base URL centralizzata
-const BASE_URL = 'https://corner-pub-backend.onrender.com';
+const BASE_URL = 'http://localhost:8080';
 
 // Nuovi endpoint per promozioni ed eventi
 const PROMOTIONS_URL = `${BASE_URL}/api/promotions/attive`;
@@ -16,8 +16,7 @@ const container = document.getElementById('menuItemsContainer');
 const filters = document.getElementById('categoryFilters');
 
 let featuredIds = [];
-let allItems = [];
-
+let allItems = [];L_
 // === SEZIONE PROMOZIONI ===
 async function loadPromotions() {
   const listContainer = document.getElementById('promoTitlesList');
@@ -725,6 +724,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Caricamento eventi per registrazione
   loadEventsForRegistration();
 
-  renderPromoFilters(promotions);
 
 });
