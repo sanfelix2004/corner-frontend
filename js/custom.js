@@ -1,5 +1,5 @@
 // Base URL centralizzata
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'https://corner-pub-backend.onrender.com';
 
 // Nuovi endpoint per promozioni ed eventi
 const PROMOTIONS_URL = `${BASE_URL}/api/promotions/attive`;
