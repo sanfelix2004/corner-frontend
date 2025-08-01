@@ -1,22 +1,40 @@
-// Base URL centralizzata
-const BASE_URL = 'https://corner-pub-backend.onrender.com';
+// =========================
+// 🌐 CONFIGURAZIONE BASE
+// =========================
+const BASE_URL = 'http://localhost:8080';
 
-// Nuovi endpoint per promozioni ed eventi
-const PROMOTIONS_URL = `${BASE_URL}/api/promotions/attive`;
-const EVENTS_URL = `${BASE_URL}/api/events`;
-const EVENT_REGISTER_URL = `${BASE_URL}/api/events/register`;
+// =========================
+// 📌 MENU & PROMOZIONI
+// =========================
+const MENU_API          = `${BASE_URL}/api/menu`;                 // Menu principale
+const MENU_HIGHLIGHTS   = `${BASE_URL}/api/in_evidenza`;          // Piatti in evidenza
+const PROMOTIONS_API    = `${BASE_URL}/api/promotions/attive`;    // Promozioni attive
 
-// Endpoint esistenti
-const API_URL = `${BASE_URL}/api/menu`;
-const EVIDENZA_URL = `${BASE_URL}/api/in_evidenza`;
-const RES_API = `${BASE_URL}/api/reservations`;
-const RES_TIMES_API = `${RES_API}/available`;
+// =========================
+// 🎉 EVENTI
+// =========================
+const EVENTS_API        = `${BASE_URL}/api/events`;               // Lista eventi
+const EVENT_REGISTER    = `${EVENTS_API}`;                        // Registrazione a evento
+const EVENT_REGISTRATIONS = `${BASE_URL}/api/reservations/events`; // Tutte le registrazioni evento
 
-const container = document.getElementById('menuItemsContainer');
+// =========================
+// 📅 PRENOTAZIONI
+// =========================
+const RES_API           = `${BASE_URL}/api/reservations`;         // Endpoint base prenotazioni
+const RES_USER_API      = `${RES_API}/user`;                      // Prenotazioni di un utente
+const RES_TIMES_API     = `${RES_API}/available`;                 // Orari disponibili
+const RES_LOOKUP_API    = `${RES_API}`;                           // Lookup per telefono/data
+const RES_NOTIFY_API    = `${RES_API}/notify`;                    // Notifica contatto staff
+// =========================
+// 📌 RIFERIMENTI DOM MENU
+// =========================
 const filters = document.getElementById('categoryFilters');
+const container = document.getElementById('menuItemsContainer');
+
 
 let featuredIds = [];
-let allItems = [];L_
+let allItems = [];
+
 // === SEZIONE PROMOZIONI ===
 async function loadPromotions() {
   const listContainer = document.getElementById('promoTitlesList');
@@ -24,7 +42,7 @@ async function loadPromotions() {
   if (!listContainer || !cardsContainer) return;
 
   try {
-    const response = await fetch(PROMOTIONS_URL);
+    const response = await fetch(PROMOTIONS_API);
     if (!response.ok) throw new Error(await response.text());
 
     const promotions = await response.json();
@@ -92,24 +110,10 @@ function renderPromoItems(promo) {
   summary.id = 'promoSummary';
   summary.className = 'text-center mb-4';
   summary.innerHTML = `
-  <div class="card shadow-sm d-inline-block px-4 py-3" style="max-width: 400px; margin: 0 auto;">
-    <div class="card-body p-0 text-start">
-      <p class="mb-2">
-        <strong>Totale senza sconto:</strong>
-        <span class="text-muted text-decoration-line-through">€${totaleOriginale.toFixed(2)}</span>
-      </p>
-      <p class="mb-2">
-        <strong>Totale con sconto:</strong>
-        <span class="text-success fw-bold">€${totaleScontato.toFixed(2)}</span>
-      </p>
-      <p class="mb-0">
-        <strong>Risparmio:</strong>
-        <span class="text-danger">€${(totaleOriginale - totaleScontato).toFixed(2)}</span>
-      </p>
-    </div>
-  </div>
+  <p><strong>Totale senza sconto:</strong> <span class="without-discount">€${totaleOriginale.toFixed(2)}</span></p>
+  <p><strong>Totale con sconto:</strong> <span class="with-discount">€${totaleScontato.toFixed(2)}</span></p>
+  <p><strong>Risparmio:</strong> <span class="saving">€${(totaleOriginale - totaleScontato).toFixed(2)}</span></p>
 `;
-
 
   // Inserisci riepilogo sopra le card
   cardsContainer.parentElement.insertBefore(summary, cardsContainer);
@@ -187,69 +191,96 @@ function createPromoCard(promo, item) {
       </div>
     </div>`;
 }
+function initMap() {
+  const coords = { lat: 41.1250, lng: 16.7819 };
+  const map = new google.maps.Map(document.getElementById('mapContainer'), {
+    center: coords,
+    zoom: 16,
+    disableDefaultUI: true, // pulito senza controlli
+  });
+
+  const marker = new google.maps.Marker({
+    position: coords,
+    map: map,
+    title: "Corner Hamburgeria"
+  });
+
+  const infoWindow = new google.maps.InfoWindow({
+    content: `<div style="font-family: 'Open Sans', sans-serif; color: #222831;">
+                <h3 style="margin:0;">Corner Hamburgeria</h3>
+                <p>Piazza Duomo 58</p>
+                <p>70054 Giovinazzo (BA)</p>
+              </div>`
+  });
+
+  marker.addListener("click", () => {
+    infoWindow.open(map, marker);
+  });
+
+  // Mostra info window all'avvio
+  infoWindow.open(map, marker);
+}
+
+// Chiama initMap dopo che la Google Maps API è caricata
 
 // === POPUP EVENTI AL PRIMO ACCESSO ===
 function showEventsPopup(events) {
   if (!events || events.length === 0) return;
-  
+
   const modalHTML = `
-    <div class="modal fade" id="eventsModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title">Eventi in programma</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              ${events.map(event => `
-                <div class="col-md-6 mb-3">
-                  <div class="card h-100">
-                    <div class="card-body">
-                      <h5 class="card-title">${event.titolo}</h5>
-                      <p class="card-text">${event.descrizione}</p>
-                      <p class="card-text"><small class="text-muted">
-                        ${new Date(event.data).toLocaleString('it-IT', {
-                          weekday: 'long', 
-                          day: 'numeric',
-                          month: 'long',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </small></p>
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
+  <div id="eventsPopupOverlay" class="popup-overlay">
+    <div class="popup-container">
+      <button id="closeEventsPopupBtn" class="close-btn" aria-label="Chiudi popup">&times;</button>
+      <div class="popup-content">
+        <h2>Eventi in programma</h2>
+        <div class="events-list">
+          ${events.map(event => `
+            <div class="event-item">
+              <h3>${event.titolo}</h3>
+              <p>${event.descrizione}</p>
+              <time datetime="${event.data}">
+                ${new Date(event.data).toLocaleString('it-IT', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </time>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-          </div>
+          `).join('')}
         </div>
       </div>
     </div>
+  </div>
   `;
-  
+
   document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+  document.getElementById('closeEventsPopupBtn').addEventListener('click', closeEventsPopup);
+
+  function closeEventsPopup() {
+    const popup = document.getElementById('eventsPopupOverlay');
+    if (popup) {
+      popup.classList.add('hide');
+      setTimeout(() => popup.remove(), 300);
+      sessionStorage.setItem('eventsPopupShown', 'true');
+    }
+  }
   
-  // Inizializza e mostra il modal
-  const modal = new bootstrap.Modal(document.getElementById('eventsModal'));
-  modal.show();
-  
-  // Rimuove il modal quando viene chiuso
-  document.getElementById('eventsModal').addEventListener('hidden.bs.modal', function() {
-    this.remove();
-    localStorage.setItem('eventsPopupShown', 'true');
+  requestAnimationFrame(() => {
+    const popup = document.getElementById('eventsPopupOverlay');
+    if (popup) popup.classList.add('visible');
   });
 }
 
+
 async function checkAndShowEvents() {
   // Controlla se il popup è già stato mostrato
-  if (localStorage.getItem('eventsPopupShown')) return;
+  if (sessionStorage.getItem('eventsPopupShown')) return;
   
   try {
-    const res = await fetch(EVENTS_URL);
+    const res = await fetch(EVENTS_API);
     if (!res.ok) throw new Error(res.statusText);
     const events = await res.json();
     showEventsPopup(events);
@@ -261,10 +292,11 @@ async function checkAndShowEvents() {
 // === REGISTRAZIONE EVENTI NELLA PRENOTAZIONE ===
 async function loadEventsForRegistration(selectedDate = null) {
   try {
-    let url = EVENTS_URL;
+    let url = EVENTS_API;
     if (selectedDate) {
-      url = `${EVENTS_URL}?date=${selectedDate}`;
+      url = `${EVENTS_API}?date=${selectedDate}`;
     }
+
 
     const res = await fetch(url);
     if (!res.ok) throw new Error(res.statusText);
@@ -355,11 +387,13 @@ function renderMenuItems(filter = 'In Evidenza') {
   }
 
   toShow.forEach(item => {
+    const imageUrl = item.imageUrl || 'images/default-food.jpg'; // fallback unificato come nelle promo
+
     const card = `
       <div class="col-sm-6 col-lg-4 all ${item.categoria}">
         <div class="box">
           <div class="img-box position-relative">
-            <img src="${item.imageUrl}" alt="${item.titolo}" />
+            <img src="${imageUrl}" alt="${item.titolo}" />
             ${featuredIds.includes(item.id)
               ? '<span class="badge badge-warning position-absolute" style="top:8px;right:8px;">★</span>'
               : ''}
@@ -382,12 +416,14 @@ function renderMenuItems(filter = 'In Evidenza') {
   }
 }
 
+
 async function loadMenu() {
   try {
     const [menuRes, evRes] = await Promise.all([
-      fetch(API_URL),
-      fetch(EVIDENZA_URL)
+      fetch(MENU_API),
+      fetch(MENU_HIGHLIGHTS)
     ]);
+    
     const [menuData, highlights] = await Promise.all([
       menuRes.json(),
       evRes.json()
@@ -438,10 +474,11 @@ if (dateInput) {
     }
 
     try {
-      // Carica gli orari disponibili
+      const formattedDate = dateInput.value; // già corretto (yyyy-MM-dd)
+    
       const [slotsRes, eventsRes] = await Promise.all([
-        fetch(`${RES_TIMES_API}/${dateInput.value}`),
-        fetch(`${EVENTS_URL}?date=${dateInput.value}`)
+        fetch(`${RES_TIMES_API}/${formattedDate}`),
+        fetch(`${EVENTS_API}?date=${formattedDate}`)
       ]);
       
       const [slots, events] = await Promise.all([
@@ -522,47 +559,48 @@ if (form) {
     };
 
     try {
-      const res = await fetch(RES_API, {
+      const res = await fetch(RES_API, {   // NOTA: usa RES_API, NON RES_USER_API
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
       });
+      
 
       if (res.status === 201 || res.ok) {
         const dto = await res.json();
-        msgBox.innerHTML = `<span class="text-success">
-          Prenotazione confermata per il ${dto.date} alle ${dto.time}.
-        </span>`;
-        
+        alert(`Prenotazione confermata per il ${dto.date} alle ${dto.time}.`);
+
         // Registrazione evento se selezionato
         const eventId = document.getElementById('eventSelect')?.value;
         if (eventId) {
-          await registerForEvent(eventId, payload.name, payload.phone);
+          await registerForEvent(
+            eventId, 
+            payload.name, 
+            payload.phone, 
+            payload.people,
+            payload.note
+          );
         }
 
         form.reset();
         if (timeSelect) {
           timeSelect.innerHTML = `<option value="" disabled selected>Seleziona ora</option>`;
         }
-        
+
         const eventSelect = document.getElementById('eventSelect');
         if (eventSelect) {
           eventSelect.value = '';
         }
-        
+
         if (window.$ && $.fn.niceSelect) {
           $('select').niceSelect('update');
         }
       } else {
         const err = await res.json();
-        msgBox.innerHTML = `<span class="text-danger">
-          Errore: ${err.message || res.statusText}
-        </span>`;
+        alert(`Errore: ${err.message || res.statusText}`);
       }
     } catch (err) {
-      msgBox.innerHTML = `<span class="text-danger">
-        Impossibile contattare il server.
-      </span>`;
+      alert('Impossibile contattare il server.');
       console.error(err);
     }
   });
@@ -584,7 +622,7 @@ if (lookupForm) {
     if (!phone) return;
 
     try {
-      const res = await fetch(`${RES_API}/${encodeURIComponent(phone)}`);
+      const res = await fetch(`${RES_USER_API}/${encodeURIComponent(phone)}`);
       if (!res.ok) throw new Error(res.statusText);
       const list = await res.json();
 
@@ -601,18 +639,22 @@ if (lookupForm) {
             <div>
               <strong>${r.date} @ ${r.time}</strong><br>
               Persone: ${r.people}<br>
-              Note: ${r.note || '-'}
+              Note: ${r.note || '-'}<br>
+              ${r.isEventRegistration ? '<span class="badge bg-info">Evento</span>' : ''}
             </div>
             <button
               class="btn btn-sm btn-danger cancel-btn"
               data-phone="${r.phone}"
               data-date="${r.date}"
+              data-event="${r.isEventRegistration}"
+              data-eventid="${r.eventId || ''}"
             >Annulla</button>
           `;
           reservationsList.appendChild(li);
         });
-      }
-    } catch (err) {
+        
+    }   
+  } catch (err) {
       reservationsList.innerHTML = `
         <li class="list-group-item text-danger">
           Errore durante il recupero delle prenotazioni.
@@ -621,7 +663,6 @@ if (lookupForm) {
     }
   });
 }
-
 if (reservationsList) {
   reservationsList.addEventListener('click', async e => {
     if (!e.target.classList.contains('cancel-btn')) return;
@@ -629,15 +670,27 @@ if (reservationsList) {
     const btn = e.target;
     const date = btn.dataset.date;
     const phone = btn.dataset.phone;
+    const isEvent = btn.dataset.event === 'true';
+    const eventId = btn.dataset.eventid;
 
     if (!confirm(`Vuoi veramente annullare la prenotazione del ${date}?`)) return;
 
     try {
-      const res = await fetch(`${RES_API}/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`, {
-        method: 'DELETE'
-      });
+      let url;
+      let options = { method: 'DELETE' };
+
+      if (isEvent) {
+        if (isEvent) {
+          url = `${EVENTS_API}/${encodeURIComponent(eventId)}/unregister/${encodeURIComponent(phone)}`;
+        }
+              } else {
+        url = `${RES_API}/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`;
+      }
       
+
+      const res = await fetch(url, options);
       if (!res.ok) throw new Error(res.statusText);
+
       btn.closest('li').remove();
     } catch (err) {
       alert('Errore nell\'annullamento della prenotazione.');
@@ -645,6 +698,52 @@ if (reservationsList) {
     }
   });
 }
+
+
+// Gestione tab Prenotazione / Evento
+const bookingTabs = document.getElementById('bookingTabs');
+if (bookingTabs) {
+  bookingTabs.querySelectorAll('li').forEach(tab => {
+    tab.addEventListener('click', () => {
+      bookingTabs.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+      tab.classList.add('active');
+
+      document.getElementById('tavoloForm').classList.add('d-none');
+      document.getElementById('eventoForm').classList.add('d-none');
+      document.getElementById(tab.dataset.target).classList.remove('d-none');
+    });
+  });
+}
+
+// Submit evento
+const eventForm = document.getElementById('eventForm');
+if (eventForm) {
+  eventForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const payload = {
+      name: document.getElementById('eventName').value.trim(),
+      phone: document.getElementById('eventPhone').value.trim(),
+      partecipanti: parseInt(document.getElementById('eventPartecipanti').value, 10),
+      note: document.getElementById('eventNote').value.trim()
+    };
+    const eventId = document.getElementById('eventSelect').value;
+    try {
+      const res = await fetch(`${EVENT_REGISTER}/${eventId}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(await res.text());
+      document.getElementById('eventMessage').innerHTML =
+        `<span class="text-success">Iscrizione confermata!</span>`;
+      eventForm.reset();
+    } catch (err) {
+      document.getElementById('eventMessage').innerHTML =
+        `<span class="text-danger">Errore: ${err.message}</span>`;
+    }
+  });
+}
+
 
 // Scroll liscio
 document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -701,28 +800,128 @@ function showToast(message, isError = false) {
   }, 3000);
 }
 
-// Inizializzazione generale
+async function registerForEvent(eventId, name, phone, partecipanti = 1, note = "") {
+  try {
+    const res = await fetch(`${EVENT_REGISTER}/${eventId}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, partecipanti, note })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      showToast(err.message || "Errore iscrizione evento", true);
+      return;
+    }
+
+    showToast("Iscrizione evento confermata!");
+  } catch (err) {
+    console.error(err);
+    showToast("Errore di connessione", true);
+  }
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    // Attiva bottone cliccato
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Mostra form corrispondente
+    const target = btn.dataset.target;
+    document.querySelectorAll('.form_container').forEach(f => f.classList.add('d-none'));
+    document.getElementById(target).classList.remove('d-none');
+
+    // Se è la scheda eventi → carica eventi
+    if (target === "eventoForm") {
+      const selectedDate = document.getElementById('resDate')?.value || null;
+      await loadEventsForRegistration(selectedDate);
+    }
+  });
+});
+// Creazione e inserimento popup newsletter nel DOM
+function createNewsletterPopup() {
+  const popupHTML = `
+  <div id="newsletterPopup" class="newsletter-popup-overlay">
+    <div class="newsletter-popup">
+      <button id="closePopupBtn" class="close-btn" aria-label="Chiudi popup">&times;</button>
+      <div class="popup-content">
+        <div class="popup-left">
+      </div>
+    </div>
+  </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', popupHTML);
+
+  // Eventi chiusura
+  document.getElementById('closePopupBtn').addEventListener('click', () => {
+    closeNewsletterPopup();
+  });
+
+  // Submit form
+  document.getElementById('newsletterForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = document.getElementById('newsletterName').value.trim();
+    const email = document.getElementById('newsletterEmail').value.trim();
+    const msgElem = document.getElementById('formMessage');
+
+    if (!name || !email) {
+      msgElem.textContent = "Compila entrambi i campi.";
+      msgElem.style.color = "red";
+      return;
+    }
+
+    // Simula invio dati (qui metti la chiamata reale API se vuoi)
+    try {
+      // esempio simulato di attesa
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      msgElem.textContent = "Iscrizione avvenuta con successo! Grazie.";
+      msgElem.style.color = "green";
+
+      // reset form dopo 2 secondi e chiudi popup
+      setTimeout(() => {
+        document.getElementById('newsletterForm').reset();
+        closeNewsletterPopup();
+      }, 2000);
+    } catch (err) {
+      msgElem.textContent = "Errore durante l'iscrizione, riprova.";
+      msgElem.style.color = "red";
+    }
+  });
+}
+
+function showNewsletterPopup() {
+  const popup = document.getElementById('newsletterPopup');
+  if (popup) {
+    popup.classList.add('visible');
+  }
+}
+
+function closeNewsletterPopup() {
+  const popup = document.getElementById('newsletterPopup');
+  if (popup) {
+    popup.classList.remove('visible');
+    setTimeout(() => popup.remove(), 300);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Anno corrente nel footer
   getYear();
-  
-  // Data minima per prenotazioni (oggi)
+
   if (dateInput) {
     const today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
   }
-  
-  // Caricamento promozioni
+
   loadPromotions();
-  
-  // Caricamento menu
   loadMenu();
-  
-  // Popup eventi al primo accesso
   checkAndShowEvents();
-  
-  // Caricamento eventi per registrazione
   loadEventsForRegistration();
 
-
+  createNewsletterPopup();
+  setTimeout(() => {
+    showNewsletterPopup();
+  }, 1000);
 });

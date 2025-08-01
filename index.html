@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    
   <!-- Basic -->
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -287,14 +288,26 @@
   <!-- end about section -->
 
  <!-- book section -->
-<section id="book" class="book_section layout_padding">
+ <section id="book" class="book_section layout_padding">
   <div class="container">
     <div class="heading_container heading_center">
-      <h2>Prenota un tavolo</h2>
+      <h2>Prenotazioni</h2>
+      <div class="tab-selector mb-4 text-center">
+        <button class="tab-btn active" data-target="tavoloForm">
+          <i class="fa fa-cutlery me-2"></i> Prenotazione Tavolo
+        </button>
+        <button class="tab-btn" data-target="eventoForm">
+          <i class="fa fa-calendar me-2"></i> Registrazione Evento
+        </button>
+      </div>
+      
     </div>
+
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-6">
-        <div class="form_container">
+
+        <!-- FORM PRENOTAZIONE TAVOLO -->
+        <div id="tavoloForm" class="form_container">
           <form id="reservationForm">
             <div class="mb-3">
               <input id="resName" type="text" class="form-control" placeholder="Nome" required />
@@ -306,7 +319,7 @@
               <input id="resPeople" type="number" class="form-control" placeholder="Numero di persone" min="1" required />
             </div>
             <div class="mb-3">
-            <input id="resDate" type="date" class="form-control" required min="">
+              <input id="resDate" type="date" class="form-control" required min="">
             </div>
             <div class="mb-3">
               <select id="resTime" class="form-control nice-select wide" required>
@@ -314,15 +327,7 @@
               </select>
             </div>
             <div class="mb-3">
-              <textarea id="resNote" class="form-control" placeholder="Note (optional)"></textarea>
-            </div>
-            <!-- Event Registration Section -->
-            <div id="eventRegistrationSection" class="d-none mt-4">
-              <h5>Partecipa ad un evento</h5>
-              <div id="noEventsMessage" class="alert alert-info d-none"></div>
-              <select id="eventSelect" class="form-select mb-3">
-                <option value="">Seleziona un evento</option>
-              </select>
+              <textarea id="resNote" class="form-control" placeholder="Note (opzionali)"></textarea>
             </div>
             <div class="btn_box text-center">
               <button type="submit" class="btn">Prenota</button>
@@ -330,10 +335,41 @@
             <p id="resMessage" class="mt-3 text-center"></p>
           </form>
         </div>
+
+        <!-- FORM REGISTRAZIONE EVENTO -->
+        <div id="eventoForm" class="form_container d-none">
+          <form id="eventForm">
+            <div class="mb-3">
+              <input id="eventName" type="text" class="form-control" placeholder="Nome" required />
+            </div>
+            <div class="mb-3">
+              <input id="eventPhone" type="text" class="form-control" placeholder="Telefono" required />
+            </div>
+            <div class="mb-3">
+              <input id="eventPartecipanti" type="number" class="form-control" placeholder="Partecipanti" min="1" value="1" required />
+            </div>
+            <div class="mb-3">
+              <textarea id="eventNote" class="form-control" placeholder="Note"></textarea>
+            </div>
+            <div class="mb-3">
+              <select id="eventSelect" class="form-control" required>
+                <option value="">Seleziona un evento</option>
+              </select>
+              <div id="noEventsMessage" class="alert alert-info d-none"></div>
+            </div>
+            <div id="postiDisponibili" class="text-muted mb-3"></div>
+            <div class="btn_box text-center">
+              <button type="submit" class="btn">Iscriviti</button>
+            </div>
+            <p id="eventMessage" class="mt-3 text-center"></p>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>
 </section>
+
 <div style="line-height: 0; margin-bottom: -2px;">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#FFE1A8" fill-opacity="1" d="M0,160L24,138.7C48,117,96,75,144,96C192,117,240,203,288,197.3C336,192,384,96,432,58.7C480,21,528,43,576,80C624,117,672,171,720,202.7C768,235,816,245,864,256C912,267,960,277,1008,272C1056,267,1104,245,1152,202.7C1200,160,1248,96,1296,85.3C1344,75,1392,117,1416,138.7L1440,160L1440,320L1416,320C1392,320,1344,320,1296,320C1248,320,1200,320,1152,320C1104,320,1056,320,1008,320C960,320,912,320,864,320C816,320,768,320,720,320C672,320,624,320,576,320C528,320,480,320,432,320C384,320,336,320,288,320C240,320,192,320,144,320C96,320,48,320,24,320L0,320Z"></path></svg>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" style="margin-top: -1px;"><path fill="#FFE1A8" fill-opacity="1" d="M0,256L20,256C40,256,80,256,120,234.7C160,213,200,171,240,176C280,181,320,235,360,234.7C400,235,440,181,480,176C520,171,560,213,600,240C640,267,680,277,720,250.7C760,224,800,160,840,154.7C880,149,920,203,960,192C1000,181,1040,107,1080,112C1120,117,1160,203,1200,229.3C1240,256,1280,224,1320,218.7C1360,213,1400,235,1420,245.3L1440,256L1440,0L1420,0C1400,0,1360,0,1320,0C1280,0,1240,0,1200,0C1160,0,1120,0,1080,0C1040,0,1000,0,960,0C920,0,880,0,840,0C800,0,760,0,720,0C680,0,640,0,600,0C560,0,520,0,480,0C440,0,400,0,360,0C320,0,280,0,240,0C200,0,160,0,120,0C80,0,40,0,20,0L0,0Z"></path></svg>
@@ -378,12 +414,16 @@
           <h5 class="location_name">Corner Hamburgeria</h5>
           <p class="location_address mb-1">Piazza Duomo 58</p>
           <p class="location_zip mb-3">70054 Giovinazzo (BA)</p>
-          <div class="col-md-6">
-        <div class="map_container">
-            <div id="googleMap"></div>
+          <div class="map-container">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6004.951500524103!2d16.67113567672038!3d41.189600371325696!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1347fa6060d4d62f%3A0xaf3c711416f94a0c!2sPiazza%20Duomo%2C%2058%2C%2070054%20Giovinazzo%20BA!5e0!3m2!1sit!2sit!4v1754061927629!5m2!1sit!2sit" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
           </div>
         </div>
-        </div>
+        
       </div>
     </div>
   </div>
