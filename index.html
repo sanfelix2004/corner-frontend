@@ -32,6 +32,51 @@
   <link href="css/responsive.css" rel="stylesheet" />
   
   <style>
+      /* Reset base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Evita scrollbar orizzontale */
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    /* Centra i contenuti */
+    .container, .container-fluid {
+      max-width: 100%;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    /* Centra testi e box nelle sezioni */
+    section {
+      text-align: center;
+    }
+
+    /* Rende le immagini sempre responsive */
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Fix pulsanti/tab */
+    .btn, .tab-btn {
+      display: inline-block;
+      margin: 0.5rem auto;
+    }
+
+    /* Footer senza spazi strani */
+    footer {
+      padding: 20px 10px;
+      text-align: center;
+    }
+
     /* Toast Notification */
     #customToast {
       position: fixed;
