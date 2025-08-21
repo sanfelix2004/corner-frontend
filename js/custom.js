@@ -1,7 +1,7 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'https://corner-pub-backend.onrender.com';
 
 // =========================
 // 📌 MENU & PROMOZIONI
@@ -48,7 +48,7 @@ async function loadPromotions() {
     const promotions = await response.json();
 
     if (!promotions || promotions.length === 0) {
-      cardsContainer.innerHTML = `<div class="alert alert-info">Nessuna promozione attiva</div>`;
+      cardsContainer.innerHTML = `<center><div class="alert alert-info">Nessuna promozione attiva</div></center>`;
       return;
     }
 
@@ -82,7 +82,7 @@ function renderPromoItems(promo) {
 
   const prodotti = promo.items || [];
   if (prodotti.length === 0) {
-    cardsContainer.innerHTML = '<div class="col-12 text-center">Nessun prodotto in promozione</div>';
+    cardsContainer.innerHTML = '<center><div class="col-12 text-center">Nessun prodotto in promozione</div></center>';
     return;
   }
 
@@ -628,9 +628,10 @@ if (lookupForm) {
 
       if (list.length === 0) {
         reservationsList.innerHTML = `
+        <center>
           <li class="list-group-item">
             Nessuna prenotazione trovata per <strong>${phone}</strong>.
-          </li>`;
+          </li></center>`;
       } else {
         list.forEach(r => {
           const li = document.createElement('li');
