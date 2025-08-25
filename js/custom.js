@@ -163,11 +163,11 @@ function renderPromoItems(promo) {
 
 
 function createPromoCard(promo, item) {
-  const categoriaSlug = item.categoria.replace(/\s+/g, '-');
-  const prezzoOriginale = item.prezzoOriginale || 0;
-  const sconto = item.scontoPercentuale || 0;
-  const prezzoScontato = item.prezzoScontato || (prezzoOriginale * (1 - sconto / 100));
-  const imageUrl = item.imageUrl || 'img/default-food.jpg';
+  const categoriaSlug   = (item.categoria || 'generico').replace(/\s+/g, '-');
+  const prezzoOriginale = Number(item.prezzoOriginale ?? 0);
+  const sconto          = Number(item.scontoPercentuale ?? 0);
+  const prezzoFinale    = Number(item.prezzoScontato ?? (prezzoOriginale * (1 - sconto / 100)));
+  const imageUrl        = item.imageUrl || 'img/default-food.jpg';
 
   return `
     <div class="col-sm-6 col-lg-4 all ${categoriaSlug}">
@@ -176,21 +176,21 @@ function createPromoCard(promo, item) {
           <img src="${imageUrl}" alt="${item.nome}" />
         </div>
         <div class="detail-box">
-  <h5>${item.nome}</h5>
-  <p>${item.categoria}</p>
-  
-  <div class="mt-2">
-    <div class="d-flex align-items-center gap-2">
-      <span class="text-muted text-decoration-line-through">€${prezzoOriginale.toFixed(2)}</span>
-      <span class="badge bg-danger">-${sconto}%</span>
-    </div>
-    <div class="fw-bold text-success mt-1 fs-5">€${prezzoFinale.toFixed(2)}</div>
-  </div>
-</div>
-
+          <h5>${item.nome}</h5>
+          <p>${item.categoria || ''}</p>
+          <div class="mt-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="text-muted text-decoration-line-through">€${prezzoOriginale.toFixed(2)}</span>
+              <span class="badge bg-danger">-${sconto}%</span>
+            </div>
+            <div class="fw-bold text-success mt-1 fs-5">€${prezzoFinale.toFixed(2)}</div>
+          </div>
+        </div>
       </div>
     </div>`;
 }
+
+
 function initMap() {
   const coords = { lat: 41.1250, lng: 16.7819 };
   const map = new google.maps.Map(document.getElementById('mapContainer'), {
