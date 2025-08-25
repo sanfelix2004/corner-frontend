@@ -685,7 +685,7 @@ if (reservationsList) {
           url = `${EVENTS_API}/${encodeURIComponent(eventId)}/unregister/${encodeURIComponent(phone)}`;
         }
               } else {
-                url = `${RES_API}/by/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`;
+                url = `${RES_API}/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`;
               }
       
 
