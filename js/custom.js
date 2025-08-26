@@ -35,6 +35,15 @@ const container = document.getElementById('menuItemsContainer');
 let featuredIds = [];
 let allItems = [];
 
+
+function debugPrint(msg) {
+  const box = document.getElementById('debugBox');
+  if (box) box.innerHTML = msg;
+}
+
+
+
+
 // === SEZIONE PROMOZIONI ===
 async function loadPromotions() {
   const listContainer = document.getElementById('promoTitlesList');
@@ -466,6 +475,8 @@ const msgBox = document.getElementById('resMessage');
 
 if (dateInput) {
   dateInput.addEventListener('change', async () => {
+    const formattedDate = dateInput.value;
+    debugPrint("Data scelta change(): " + formattedDate);
     if (!timeSelect) return;
     
     timeSelect.innerHTML = `<option value="" disabled selected>Caricamento…</option>`;
@@ -557,6 +568,7 @@ if (form) {
       people: parseInt(document.getElementById('resPeople').value, 10),
       note: document.getElementById('resNote').value.trim()
     };
+    debugPrint("Data inviata nel payload submit(): " + payload.date);
 
     try {
       const res = await fetch(RES_API, {   // NOTA: usa RES_API, NON RES_USER_API
