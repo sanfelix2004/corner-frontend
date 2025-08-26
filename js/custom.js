@@ -1,7 +1,7 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-const BASE_URL = 'https://corner-pub-backend.onrender.com';
+const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
 // 📌 MENU & PROMOZIONI
@@ -685,7 +685,7 @@ if (reservationsList) {
           url = `${EVENTS_API}/${encodeURIComponent(eventId)}/unregister/${encodeURIComponent(phone)}`;
         }
               } else {
-                url = `${RES_API}/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`;
+                url = `${RES_API}/lookup/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`;
               }
       
 
