@@ -1,6 +1,7 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
+//const BASE_URL = "http://localhost:8080";
 const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
@@ -85,85 +86,90 @@ async function loadPromotions() {
   }
 }
 
+// utilità se non l'hai già messa
+const fmtEUR = n => `€${Number(n).toFixed(2)}`;
+
 function renderPromoItems(promo) {
   const cardsContainer = document.getElementById('promoItemsContainer');
   if (!cardsContainer) return;
 
-  const prodotti = promo.items || [];
+  const prodotti = Array.isArray(promo.items) ? promo.items : [];
   if (prodotti.length === 0) {
     cardsContainer.innerHTML = '<center><div class="col-12 text-center">Nessun prodotto in promozione</div></center>';
+    // rimuovi eventuale vecchio summary
+    const oldSummary = document.getElementById('promoSummary');
+    if (oldSummary) oldSummary.remove();
     return;
   }
 
-  // Calcola totali
+  // calcolo totali
   let totaleOriginale = 0;
-  let totaleScontato = 0;
+  let totaleScontato  = 0;
 
-  prodotti.forEach(item => {
-    const prezzoOriginale = item.prezzoOriginale || 0;
-    const sconto = item.scontoPercentuale || 0;
-    const prezzoFinale = item.prezzoScontato != null
-      ? item.prezzoScontato
+  const rows = prodotti.map(item => {
+    const prezzoOriginale = Number(item.prezzoOriginale || 0);
+    const sconto          = Number(item.scontoPercentuale || 0);
+    const prezzoFinale    = (item.prezzoScontato != null)
+      ? Number(item.prezzoScontato)
       : prezzoOriginale * (1 - sconto / 100);
+    const imageUrl        = item.imageUrl || 'img/default-food.jpg';
+    const cat             = item.categoria || '';
 
     totaleOriginale += prezzoOriginale;
-    totaleScontato += prezzoFinale;
-  });
-
-  // Rimuovi eventuale riepilogo precedente
-  const oldSummary = document.getElementById('promoSummary');
-  if (oldSummary) oldSummary.remove();
-
-  // Crea nuovo riepilogo
-  const summary = document.createElement('div');
-  summary.id = 'promoSummary';
-  summary.className = 'text-center mb-4';
-  summary.innerHTML = `
-  <p><strong>Totale senza sconto:</strong> <span class="without-discount">€${totaleOriginale.toFixed(2)}</span></p>
-  <p><strong>Totale con sconto:</strong> <span class="with-discount">€${totaleScontato.toFixed(2)}</span></p>
-  <p><strong>Risparmio:</strong> <span class="saving">€${(totaleOriginale - totaleScontato).toFixed(2)}</span></p>
-`;
-
-  // Inserisci riepilogo sopra le card
-  cardsContainer.parentElement.insertBefore(summary, cardsContainer);
-
-  // Genera card prodotti
-  cardsContainer.innerHTML = prodotti.map(item => {
-    const categoriaSlug = (item.categoria || 'generico').replace(/\s+/g, '-');
-    const prezzoOriginale = item.prezzoOriginale || 0;
-    const sconto = item.scontoPercentuale || 0;
-    const prezzoFinale = item.prezzoScontato != null
-      ? item.prezzoScontato
-      : prezzoOriginale * (1 - sconto / 100);
-    const imageUrl = item.imageUrl || 'img/default-food.jpg';
+    totaleScontato  += prezzoFinale;
 
     return `
-      <div class="col-sm-6 col-lg-4 all ${categoriaSlug}">
-        <div class="box promo-card">
-          <div class="img-box">
-            <img src="${imageUrl}" alt="${item.nome}" />
-          </div>
-          <div class="detail-box">
-            <h5>${item.nome}</h5>
-            <p>${item.categoria}</p>
-
-            <div class="price-line mt-2 d-flex align-items-center gap-2">
-              <span class="text-decoration-line-through text-muted">€${prezzoOriginale.toFixed(2)}</span>
-              <span class="badge bg-danger">-${sconto}%</span>
-            </div>
-
-            <div class="fw-bold text-success mt-1">€${prezzoFinale.toFixed(2)}</div>
-          </div>
+      <li class="promo-item">
+        <div class="promo-thumb">
+          <img src="${imageUrl}" alt="${item.nome}" loading="lazy">
         </div>
-      </div>
+        <div class="promo-info">
+          <h5>${item.nome}</h5>
+          <div class="meta">${cat}</div>
+        </div>
+        <div class="promo-prices">
+          ${prezzoOriginale ? `<span class="old">${fmtEUR(prezzoOriginale)}</span>` : ''}
+          ${sconto ? `<span class="badge">-${sconto}%</span>` : ''}
+          <span class="new">${fmtEUR(prezzoFinale)}</span>
+        </div>
+      </li>
     `;
   }).join('');
 
-  // Inizializza Isotope se serve
-  if (window.Isotope) {
-    window.$gridPromotions = new Isotope(cardsContainer, {
-      itemSelector: '.all',
-      layoutMode: 'fitRows'
+  // costruisco un'unica card
+  const html = `
+    <div class="col-12">
+      <div class="promo-list-card">
+        <div class="promo-list-header">
+          <div>${promo.nome || 'Promozione'}</div>
+          <div style="font-weight:900;">${prodotti.length} articoli</div>
+        </div>
+        <ul class="promo-items">
+          ${rows}
+        </ul>
+        <div class="promo-totals">
+          <div class="line"><span>Totale senza sconto</span><span class="without-discount">${fmtEUR(totaleOriginale)}</span></div>
+          <div class="line"><span>Totale con sconto</span><span class="with-discount">${fmtEUR(totaleScontato)}</span></div>
+          <div class="line"><span>Risparmio</span><span class="saving">${fmtEUR(totaleOriginale - totaleScontato)}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // rimuovo eventuale vecchio riepilogo separato
+  const oldSummary = document.getElementById('promoSummary');
+  if (oldSummary) oldSummary.remove();
+
+  // inserisco la nuova card unica
+  cardsContainer.innerHTML = html;
+
+  // piccola animazione d'entrata
+  const card = cardsContainer.querySelector('.promo-list-card');
+  if (card) {
+    card.style.opacity = 0; card.style.transform = 'translateY(8px)';
+    requestAnimationFrame(() => {
+      card.style.transition = 'opacity .25s ease, transform .25s ease';
+      card.style.opacity = 1; card.style.transform = 'translateY(0)';
     });
   }
 }
