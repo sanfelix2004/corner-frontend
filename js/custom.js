@@ -846,9 +846,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    // Mostra form corrispondente
+    // Mostra form corrispondente SOLO dentro #book
     const target = btn.dataset.target;
-    document.querySelectorAll('.form_container').forEach(f => f.classList.add('d-none'));
+    document.querySelectorAll('#book .form_container').forEach(f => f.classList.add('d-none'));
     document.getElementById(target).classList.remove('d-none');
 
     // Se è la scheda eventi → carica eventi
@@ -858,6 +858,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     }
   });
 });
+
 // Creazione e inserimento popup newsletter nel DOM
 function createNewsletterPopup() {
   const popupHTML = `
