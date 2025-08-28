@@ -857,59 +857,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// Creazione e inserimento popup newsletter nel DOM
-/*function createNewsletterPopup() {
-  const popupHTML = `
-  <div id="newsletterPopup" class="newsletter-popup-overlay">
-    <div class="newsletter-popup">
-      <button id="closePopupBtn" class="close-btn" aria-label="Chiudi popup">&times;</button>
-      <div class="popup-content">
-        <div class="popup-left">
-      </div>
-    </div>
-  </div>
-  `;
-
-  document.body.insertAdjacentHTML('beforeend', popupHTML);
-
-  // Eventi chiusura
-  document.getElementById('closePopupBtn').addEventListener('click', () => {
-    closeNewsletterPopup();
-  });
-
-  // Submit form
-  document.getElementById('newsletterForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const name = document.getElementById('newsletterName').value.trim();
-    const email = document.getElementById('newsletterEmail').value.trim();
-    const msgElem = document.getElementById('formMessage');
-
-    if (!name || !email) {
-      msgElem.textContent = "Compila entrambi i campi.";
-      msgElem.style.color = "red";
-      return;
-    }
-
-    // Simula invio dati (qui metti la chiamata reale API se vuoi)
-    try {
-      // esempio simulato di attesa
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      msgElem.textContent = "Iscrizione avvenuta con successo! Grazie.";
-      msgElem.style.color = "green";
-
-      // reset form dopo 2 secondi e chiudi popup
-      setTimeout(() => {
-        document.getElementById('newsletterForm').reset();
-        closeNewsletterPopup();
-      }, 2000);
-    } catch (err) {
-      msgElem.textContent = "Errore durante l'iscrizione, riprova.";
-      msgElem.style.color = "red";
-    }
-  });
-}*/
-
 function showNewsletterPopup() {
   const popup = document.getElementById('newsletterPopup');
   if (popup) {
@@ -937,9 +884,18 @@ document.addEventListener('DOMContentLoaded', () => {
   loadMenu();
   checkAndShowEvents();
   loadEventsForRegistration();
-
- /* createNewsletterPopup();
-  setTimeout(() => {
-    showNewsletterPopup();
-  }, 1000);*/
 });
+  $(function(){
+    $("#heroCarousel").owlCarousel({
+      items: 1,
+      loop: true,
+      autoplay: true,
+      autoplayTimeout: 4000,
+      autoplayHoverPause: false,
+      animateOut: "fadeOut",
+      autoplaySpeed: 700,
+      dots: false,
+      nav: false
+    });
+  });
+
