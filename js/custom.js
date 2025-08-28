@@ -753,12 +753,10 @@ if (eventForm) {
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error(await res.text());
-      document.getElementById('eventMessage').innerHTML =
-        `<span class="text-success">Iscrizione confermata!</span>`;
+      alert("Iscrizione all'evento confermata!");
       eventForm.reset();
     } catch (err) {
-      document.getElementById('eventMessage').innerHTML =
-        `<span class="text-danger">Errore: ${err.message}</span>`;
+      alert(`Errore: ${err.message}`);
     }
   });
 }
@@ -829,11 +827,11 @@ async function registerForEvent(eventId, name, phone, partecipanti = 1, note = "
 
     if (!res.ok) {
       const err = await res.json();
-      showToast(err.message || "Errore iscrizione evento", true);
+      alert(err.message || "Errore iscrizione evento");
       return;
     }
-
-    showToast("Iscrizione evento confermata!");
+    alert("Iscrizione evento confermata!");
+    
   } catch (err) {
     console.error(err);
     showToast("Errore di connessione", true);
@@ -860,7 +858,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // Creazione e inserimento popup newsletter nel DOM
-function createNewsletterPopup() {
+/*function createNewsletterPopup() {
   const popupHTML = `
   <div id="newsletterPopup" class="newsletter-popup-overlay">
     <div class="newsletter-popup">
@@ -910,7 +908,7 @@ function createNewsletterPopup() {
       msgElem.style.color = "red";
     }
   });
-}
+}*/
 
 function showNewsletterPopup() {
   const popup = document.getElementById('newsletterPopup');
@@ -940,8 +938,8 @@ document.addEventListener('DOMContentLoaded', () => {
   checkAndShowEvents();
   loadEventsForRegistration();
 
-  createNewsletterPopup();
+ /* createNewsletterPopup();
   setTimeout(() => {
     showNewsletterPopup();
-  }, 1000);
+  }, 1000);*/
 });
