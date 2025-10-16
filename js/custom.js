@@ -47,27 +47,25 @@ function debugPrint(msg) {
 
 // === SEZIONE PROMOZIONI ===
 async function loadPromotions() {
-  const listContainer = document.getElementById('promoTitlesList');
+  const listContainer  = document.getElementById('promoTitlesList');
   const cardsContainer = document.getElementById('promoItemsContainer');
   if (!listContainer || !cardsContainer) return;
 
   try {
     const response = await fetch(PROMOTIONS_API);
     if (!response.ok) throw new Error(await response.text());
-
     const promotions = await response.json();
 
     if (!promotions || promotions.length === 0) {
-      cardsContainer.innerHTML = `<center><div class="alert alert-info">Nessuna promozione attiva</div></center>`;
+      togglePromotionsVisibility(false);   // nascondi tutto
       return;
     }
 
-    // Popola titoli delle promozioni
+    togglePromotionsVisibility(true);      // mostra
     listContainer.innerHTML = promotions.map((p, idx) => `
       <li class="${idx === 0 ? 'active' : ''}" data-promo-index="${idx}">${p.nome}</li>
     `).join('');
 
-    // Listener per clic su promozione
     listContainer.querySelectorAll('li').forEach(li => {
       li.addEventListener('click', () => {
         listContainer.querySelectorAll('li').forEach(el => el.classList.remove('active'));
@@ -77,12 +75,10 @@ async function loadPromotions() {
       });
     });
 
-    // Mostra i prodotti della prima promo di default
     renderPromoItems(promotions[0]);
-
   } catch (err) {
-    cardsContainer.innerHTML = `<div class="alert alert-danger">Errore: ${err.message}</div>`;
     console.error(err);
+    togglePromotionsVisibility(false);     // in errore, nascondi
   }
 }
 
@@ -909,3 +905,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+function togglePromotionsVisibility(hasPromos) {
+  const section = document.getElementById('promotionsSection');
+  if (!section) return;
+
+  // mostra/nascondi la sezione
+  section.style.display = hasPromos ? '' : 'none';
+
+  // ONDA SOPRA: cerca lo svg immediatamente precedente
+  (function hidePrevWave() {
+    let el = section.previousElementSibling;
+    while (el && el.tagName && el.tagName.toLowerCase() !== 'svg') {
+      el = el.previousElementSibling;
+    }
+    if (el && el.tagName && el.tagName.toLowerCase() === 'svg') {
+      el.style.display = hasPromos ? '' : 'none';
+    }
+  })();
+
+  // ONDE SOTTO: blocco subito dopo la sezione (ha due svg)
+  (function hideOnlyFirstBottomWave() {
+    const after = section.nextElementSibling;           // <div> con due svg
+    if (!after) return;
+    const firstSvg = after.querySelector('svg:first-of-type');
+    if (firstSvg) firstSvg.style.display = hasPromos ? '' : 'none';
+    // il secondo svg resta visibile
+  })();
+
+  // Link “Promozioni” nel menu
+  const navPromoLi = document.querySelector('a.nav-link[href="#promotionsSection"]')?.closest('li');
+  if (navPromoLi) navPromoLi.style.display = hasPromos ? '' : 'none';
+}
