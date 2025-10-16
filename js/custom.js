@@ -388,7 +388,16 @@ function renderFilters(categories) {
     });
   });
 }
-
+function renderAllergens(allergens = []) {
+  if (!Array.isArray(allergens) || allergens.length === 0) return '';
+  const chips = allergens.map(a => {
+    const isTrace = a.status === 'MAY_CONTAIN';
+    const prefix = isTrace ? '(tracce)' : '(contiene)';
+    const text = `${prefix} ${a.label.toLowerCase()}`;
+    return `<li class="allergen-chip">${text}</li>`;
+  }).join('');
+  return `<div class="allergens"><ul class="allergen-list">${chips}</ul></div>`;
+}
 function renderMenuItems(filter = 'In Evidenza') {
   if (!container) return;
   
@@ -405,24 +414,25 @@ function renderMenuItems(filter = 'In Evidenza') {
     const imageUrl = item.imageUrl || 'images/default-food.jpg'; // fallback unificato come nelle promo
 
     const card = `
-      <div class="col-sm-6 col-lg-4 all ${item.categoria}">
-        <div class="box">
-          <div class="img-box position-relative">
-            <img src="${imageUrl}" alt="${item.titolo}" />
-            ${featuredIds.includes(item.id)
-              ? '<span class="badge badge-warning position-absolute" style="top:8px;right:8px;">★</span>'
-              : ''}
-          </div>
-          <div class="detail-box">
-            <h5>${item.titolo}</h5>
-            <p>${item.descrizione || ''}</p>
-            <div class="options">
-              <h6>€${item.prezzo.toFixed(2)}</h6>
-              <a href="#"><i class="fa fa-shopping-cart"></i></a>
-            </div>
-          </div>
+  <div class="col-sm-6 col-lg-4 all ${item.categoria}">
+    <div class="box">
+      <div class="img-box position-relative">
+        <img src="${imageUrl}" alt="${item.titolo}" />
+        ${featuredIds.includes(item.id)
+          ? '<span class="badge badge-warning position-absolute" style="top:8px;right:8px;">★</span>'
+          : ''}
+      </div>
+      <div class="detail-box">
+        <h5>${item.titolo}</h5>
+        <p>${item.descrizione || ''}</p>
+        ${renderAllergens(item.allergens)}
+        <div class="options">
+          <h6>€${item.prezzo.toFixed(2)}</h6>
+          <a href="#"><i class="fa fa-shopping-cart"></i></a>
         </div>
-      </div>`;
+      </div>
+    </div>
+  </div>`;
     container.insertAdjacentHTML('beforeend', card);
   });
 
