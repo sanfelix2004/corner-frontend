@@ -1,8 +1,8 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-//const BASE_URL = "http://localhost:8080";
-const BASE_URL = "https://corner-pub-backend.onrender.com";
+const BASE_URL = "http://localhost:8080";
+//const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
 // 📌 MENU & PROMOZIONI
@@ -292,6 +292,25 @@ function showEventsPopup(events) {
         color: #6c757d;
         font-size: .92rem;
       }
+      /* Bottone Registrati: stesso colore giallo del sito */
+.events-list .btn-register-event {
+  display: inline-block;
+  margin-top: 8px;
+  background-color: #ffb400; /* giallo Corner Pub */
+  border-color: #ffb400;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 6px 14px;
+  transition: all 0.2s ease-in-out;
+}
+.events-list .btn-register-event:hover,
+.events-list .btn-register-event:focus {
+  background-color: #e3a100;
+  border-color: #e3a100;
+  color: #fff;
+  transform: scale(1.03);
+}
       /* Locandina grande sotto il riquadro, contenuta senza distorsioni. Nessuna scrollbar interna. */
       .events-list .event-poster{
         width: 100%;
@@ -341,6 +360,11 @@ function showEventsPopup(events) {
                   <h3>${event.titolo}</h3>
                   <p>${event.descrizione ?? ''}</p>
                   <time datetime="${event.data}">${dateLabel}</time>
+                  <button class="btn btn-primary btn-register-event"
+                          data-event-id="${event.id}"
+                          data-event-date="${new Date(event.data).toISOString().split('T')[0]}">
+                    Registrati
+                  </button>
                 </div>
                 <div class="event-poster">
                   <img src="${poster}" alt="Locandina di ${event.titolo}">
@@ -358,6 +382,17 @@ function showEventsPopup(events) {
   document.body.classList.add('no-scroll');
 
   document.getElementById('closeEventsPopupBtn').addEventListener('click', closeEventsPopup);
+
+  // Gestione click "Registrati"
+  document.querySelectorAll('#eventsPopupOverlay .btn-register-event').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const id = e.currentTarget.getAttribute('data-event-id');
+      const dateISO = e.currentTarget.getAttribute('data-event-date');
+      // Chiudi popup e porta l'utente alla registrazione evento
+      closeEventsPopup();
+      await navigateToEventRegistration(id, dateISO);
+    });
+  });
 
   // Calibra dinamicamente l'altezza della locandina per evitare barre di scorrimento
   function adjustEventPosters(){
@@ -393,6 +428,53 @@ function showEventsPopup(events) {
   window.addEventListener('orientationchange', adjustEventPosters);
 }
 
+
+/** Naviga alla scheda "Evento", imposta la data evento e pre-seleziona l'evento */
+async function navigateToEventRegistration(eventId, dateISO) {
+  try {
+    // 1) Imposta la data nel datepicker (se disponibile) e scatena il change
+    const dateInputEl = document.getElementById('resDate');
+    if (dateInputEl && dateISO) {
+      dateInputEl.value = dateISO;
+      const ev = new Event('change');
+      dateInputEl.dispatchEvent(ev);
+    }
+
+    // 2) Apri la scheda "Evento"
+    const tabBtn = document.querySelector('.tab-btn[data-target="eventoForm"]');
+    if (tabBtn) tabBtn.click();
+
+    // 3) Forza il caricamento degli eventi per quella data
+    await loadEventsForRegistration(dateISO);
+
+    // 4) Seleziona l'evento nel select (attendi che compaia se necessario)
+    const eventSelect = document.getElementById('eventSelect');
+    if (eventSelect) {
+      const trySelect = (retries = 10) => new Promise(resolve => {
+        const opt = Array.from(eventSelect.options).find(o => String(o.value) === String(eventId));
+        if (opt) {
+          eventSelect.value = String(eventId);
+          // eventuale UI plugin
+          if (window.$ && $.fn.niceSelect) $('select').niceSelect('update');
+          resolve(true);
+        } else if (retries > 0) {
+          setTimeout(() => resolve(trySelect(retries - 1)), 150);
+        } else {
+          resolve(false);
+        }
+      });
+      await trySelect();
+    }
+
+    // 5) Scroll dolce alla sezione prenotazione
+    const book = document.getElementById('book') || document.querySelector('#book');
+    if (book) {
+      book.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  } catch (e) {
+    console.error('navigateToEventRegistration error:', e);
+  }
+}
 
 async function checkAndShowEvents() {
   // Controlla se il popup è già stato mostrato
