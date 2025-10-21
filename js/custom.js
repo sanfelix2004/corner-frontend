@@ -238,6 +238,87 @@ function initMap() {
 function showEventsPopup(events) {
   if (!events || events.length === 0) return;
 
+  // Inject styles for event popup images (only once)
+  if (!document.getElementById('eventsPopupStyles')) {
+    const styleTag = document.createElement('style');
+    styleTag.id = 'eventsPopupStyles';
+    styleTag.textContent = `
+      /* Popup eventi: layout con riquadro info sopra e locandina grande sotto */
+      body.no-scroll{ overflow:hidden; }
+      .popup-container{ max-height:94vh; height:auto; }
+      .popup-content{ max-height: calc(94vh - 48px); height:auto; overflow:auto; -webkit-overflow-scrolling: touch; }
+      .events-list{ overflow:auto; max-height: calc(94vh - 140px); -webkit-overflow-scrolling: touch; }
+      .events-list .event-item{ overflow: visible; }
+
+      .popup-container, .popup-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+      .events-list .event-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+      }
+
+      .events-list .event-item{
+        padding: 12px;
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,.03);
+        margin-bottom: 16px;
+      }
+      .events-list .event-info{
+        padding: 10px 12px;
+        border: 1px solid rgba(0,0,0,.08);
+        border-radius: 10px;
+        background: #f9fafb;
+        margin-bottom: 12px;
+      }
+      .events-list .event-info h3{
+        margin: 0 0 6px 0;
+        font-size: 1.15rem;
+        line-height: 1.25;
+      }
+      .events-list .event-info p{
+        margin: 0 0 6px 0;
+        color: #555;
+      }
+      .events-list .event-info time{
+        color: #6c757d;
+        font-size: .92rem;
+      }
+      /* Locandina grande sotto il riquadro, contenuta senza distorsioni. Nessuna scrollbar interna. */
+      .events-list .event-poster{
+        width: 100%;
+        /* altezza impostata via JS per evitare barre di scorrimento */
+        border-radius: 10px;
+        background: #f1f3f5;
+        overflow: hidden; /* mai scroll */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-height: 100%;
+        aspect-ratio: auto;
+        max-width: 100%;
+        height: auto;
+      }
+      .events-list .event-poster img{
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 10px;
+        max-width: 100%;
+        display: block;
+      }
+    `;
+    document.head.appendChild(styleTag);
+  }
+
   const modalHTML = `
   <div id="eventsPopupOverlay" class="popup-overlay">
     <div class="popup-container">
@@ -245,21 +326,28 @@ function showEventsPopup(events) {
       <div class="popup-content">
         <h2>Eventi in programma</h2>
         <div class="events-list">
-          ${events.map(event => `
-            <div class="event-item">
-              <h3>${event.titolo}</h3>
-              <p>${event.descrizione}</p>
-              <time datetime="${event.data}">
-                ${new Date(event.data).toLocaleString('it-IT', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </time>
-            </div>
-          `).join('')}
+          ${events.map(event => {
+            const poster = event.posterUrl || event.poster_url || 'images/default-event.jpg';
+            const dateLabel = new Date(event.data).toLocaleString('it-IT', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+            return `
+              <div class="event-item">
+                <div class="event-info">
+                  <h3>${event.titolo}</h3>
+                  <p>${event.descrizione ?? ''}</p>
+                  <time datetime="${event.data}">${dateLabel}</time>
+                </div>
+                <div class="event-poster">
+                  <img src="${poster}" alt="Locandina di ${event.titolo}">
+                </div>
+              </div>
+            `;
+          }).join('')}
         </div>
       </div>
     </div>
@@ -267,14 +355,29 @@ function showEventsPopup(events) {
   `;
 
   document.body.insertAdjacentHTML('beforeend', modalHTML);
+  document.body.classList.add('no-scroll');
 
   document.getElementById('closeEventsPopupBtn').addEventListener('click', closeEventsPopup);
+
+  // Calibra dinamicamente l'altezza della locandina per evitare barre di scorrimento
+  function adjustEventPosters(){
+    document.querySelectorAll('#eventsPopupOverlay .event-item').forEach(item => {
+      const poster = item.querySelector('.event-poster img');
+      const container = item.querySelector('.event-poster');
+      if (poster && container) {
+        poster.style.height = 'auto';
+        poster.style.width = '100%';
+        container.style.height = 'auto';
+      }
+    }); 
+  }
 
   function closeEventsPopup() {
     const popup = document.getElementById('eventsPopupOverlay');
     if (popup) {
       popup.classList.add('hide');
       setTimeout(() => popup.remove(), 300);
+      document.body.classList.remove('no-scroll');
       sessionStorage.setItem('eventsPopupShown', 'true');
     }
   }
@@ -283,6 +386,11 @@ function showEventsPopup(events) {
     const popup = document.getElementById('eventsPopupOverlay');
     if (popup) popup.classList.add('visible');
   });
+
+  // setta subito l'altezza ottimale e aggiornala su resize/orientamento
+  adjustEventPosters();
+  window.addEventListener('resize', adjustEventPosters);
+  window.addEventListener('orientationchange', adjustEventPosters);
 }
 
 
