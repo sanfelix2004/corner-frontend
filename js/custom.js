@@ -1,8 +1,8 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-//const BASE_URL = "http://localhost:8080";
-const BASE_URL = "https://corner-pub-backend.onrender.com";
+const BASE_URL = "http://localhost:8080";
+//const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
 // 📌 MENU & PROMOZIONI
@@ -109,7 +109,8 @@ function renderPromoItems(promo) {
       ? Number(item.prezzoScontato)
       : prezzoOriginale * (1 - sconto / 100);
     const imageUrl        = item.imageUrl || 'img/default-food.jpg';
-    const cat             = item.categoria || '';
+    const cat             = item.categoryName || '';
+
 
     totaleOriginale += prezzoOriginale;
     totaleScontato  += prezzoFinale;
@@ -174,11 +175,11 @@ function renderPromoItems(promo) {
 
 
 function createPromoCard(promo, item) {
-  const categoriaSlug   = (item.categoria || 'generico').replace(/\s+/g, '-');
-  const prezzoOriginale = Number(item.prezzoOriginale ?? 0);
+  const categoriaSlug   = (item.categoryName || 'generico').replace(/\s+/g, '-');
+  const imageUrl        = item.imageUrl || 'img/default-food.jpg';
+    const prezzoOriginale = Number(item.prezzoOriginale ?? 0);
   const sconto          = Number(item.scontoPercentuale ?? 0);
   const prezzoFinale    = Number(item.prezzoScontato ?? (prezzoOriginale * (1 - sconto / 100)));
-  const imageUrl        = item.imageUrl || 'img/default-food.jpg';
 
   return `
     <div class="col-sm-6 col-lg-4 all ${categoriaSlug}">
@@ -188,7 +189,7 @@ function createPromoCard(promo, item) {
         </div>
         <div class="detail-box">
           <h5>${item.nome}</h5>
-          <p>${item.categoria || ''}</p>
+<p>${item.categoryName || ''}</p>
           <div class="mt-2">
             <div class="d-flex align-items-center gap-2">
               <span class="text-muted text-decoration-line-through">€${prezzoOriginale.toFixed(2)}</span>
@@ -593,14 +594,14 @@ function renderMenuItems(filter = 'In Evidenza') {
   if (filter === 'In Evidenza') {
     toShow = allItems.filter(i => featuredIds.includes(i.id));
   } else {
-    toShow = allItems.filter(i => i.categoria === filter);
+    toShow = allItems.filter(i => i.categoryName === filter);
   }
 
   toShow.forEach(item => {
     const imageUrl = item.imageUrl || 'images/default-food.jpg'; // fallback unificato come nelle promo
 
     const card = `
-  <div class="col-sm-6 col-lg-4 all ${item.categoria}">
+<div class="col-sm-6 col-lg-4 all ${item.categoryName}">
     <div class="box">
       <div class="img-box position-relative">
         <img src="${imageUrl}" alt="${item.titolo}" />
@@ -643,7 +644,7 @@ async function loadMenu() {
     allItems = menuData;
     featuredIds = highlights.map(h => h.itemId);
 
-    const cats = [...new Set(menuData.map(i => i.categoria))];
+    const cats = [...new Set(menuData.map(i => i.categoryName))];
     renderFilters(cats);
 
     const defaultBtn = filters.querySelector('[data-filter="In Evidenza"]');
