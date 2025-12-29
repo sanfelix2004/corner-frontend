@@ -1173,10 +1173,11 @@ $(function () {
     items: 1,
     loop: true,
     autoplay: true,
-    autoplayTimeout: 4000,
+    autoplayTimeout: 5000, // Più lento per effetto premium
     autoplayHoverPause: false,
     animateOut: "fadeOut",
-    autoplaySpeed: 700,
+    animateIn: "fadeIn", // Dissolvenza incrociata
+    smartSpeed: 1000,    // Transizione morbida
     dots: false,
     nav: false
   });

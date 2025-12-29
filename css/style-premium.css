@@ -1915,6 +1915,23 @@ a:focus {
   height: 100%;
 }
 
+/* Fix per evitare bande laterali durante la dissolvenza */
+.bg-box .owl-item.active.center,
+.bg-box .owl-item.animated {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+/* Assicura che l'animazione copra tutto */
+.animated {
+  animation-duration: 1000ms;
+  animation-fill-mode: both;
+}
+
 /* immagine adattiva che copre tutto lo schermo */
 .bg-box .item img {
   width: 100%;
