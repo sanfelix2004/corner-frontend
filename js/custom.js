@@ -1,31 +1,31 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-//const BASE_URL = "http://localhost:8080";
-const BASE_URL = "https://corner-pub-backend.onrender.com";
+const BASE_URL = "http://localhost:8080";
+//const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
 // 📌 MENU & PROMOZIONI
 // =========================
-const MENU_API          = `${BASE_URL}/api/menu`;                 // Menu principale
-const MENU_HIGHLIGHTS   = `${BASE_URL}/api/in_evidenza`;          // Piatti in evidenza
-const PROMOTIONS_API    = `${BASE_URL}/api/promotions/attive`;    // Promozioni attive
+const MENU_API = `${BASE_URL}/api/menu`;                 // Menu principale
+const MENU_HIGHLIGHTS = `${BASE_URL}/api/in_evidenza`;          // Piatti in evidenza
+const PROMOTIONS_API = `${BASE_URL}/api/promotions/attive`;    // Promozioni attive
 
 // =========================
 // 🎉 EVENTI
 // =========================
-const EVENTS_API        = `${BASE_URL}/api/events`;               // Lista eventi
-const EVENT_REGISTER    = `${EVENTS_API}`;                        // Registrazione a evento
+const EVENTS_API = `${BASE_URL}/api/events`;               // Lista eventi
+const EVENT_REGISTER = `${EVENTS_API}`;                        // Registrazione a evento
 const EVENT_REGISTRATIONS = `${BASE_URL}/api/reservations/events`; // Tutte le registrazioni evento
 
 // =========================
 // 📅 PRENOTAZIONI
 // =========================
-const RES_API           = `${BASE_URL}/api/reservations`;         // Endpoint base prenotazioni
-const RES_USER_API      = `${RES_API}/user`;                      // Prenotazioni di un utente
-const RES_TIMES_API     = `${RES_API}/available`;                 // Orari disponibili
-const RES_LOOKUP_API    = `${RES_API}`;                           // Lookup per telefono/data
-const RES_NOTIFY_API    = `${RES_API}/notify`;                    // Notifica contatto staff
+const RES_API = `${BASE_URL}/api/reservations`;         // Endpoint base prenotazioni
+const RES_USER_API = `${RES_API}/user`;                      // Prenotazioni di un utente
+const RES_TIMES_API = `${RES_API}/available`;                 // Orari disponibili
+const RES_LOOKUP_API = `${RES_API}`;                           // Lookup per telefono/data
+const RES_NOTIFY_API = `${RES_API}/notify`;                    // Notifica contatto staff
 // =========================
 // 📌 RIFERIMENTI DOM MENU
 // =========================
@@ -47,7 +47,7 @@ function debugPrint(msg) {
 
 // === SEZIONE PROMOZIONI ===
 async function loadPromotions() {
-  const listContainer  = document.getElementById('promoTitlesList');
+  const listContainer = document.getElementById('promoTitlesList');
   const cardsContainer = document.getElementById('promoItemsContainer');
   if (!listContainer || !cardsContainer) return;
 
@@ -100,20 +100,19 @@ function renderPromoItems(promo) {
 
   // calcolo totali
   let totaleOriginale = 0;
-  let totaleScontato  = 0;
+  let totaleScontato = 0;
 
   const rows = prodotti.map(item => {
     const prezzoOriginale = Number(item.prezzoOriginale || 0);
-    const sconto          = Number(item.scontoPercentuale || 0);
-    const prezzoFinale    = (item.prezzoScontato != null)
+    const sconto = Number(item.scontoPercentuale || 0);
+    const prezzoFinale = (item.prezzoScontato != null)
       ? Number(item.prezzoScontato)
       : prezzoOriginale * (1 - sconto / 100);
-    const imageUrl        = item.imageUrl || 'img/default-food.jpg';
-    const cat             = item.categoryName || '';
-
+    const imageUrl = item.imageUrl || 'img/default-food.jpg';
+    const cat = item.categoryName || '';
 
     totaleOriginale += prezzoOriginale;
-    totaleScontato  += prezzoFinale;
+    totaleScontato += prezzoFinale;
 
     return `
       <li class="promo-item">
@@ -175,11 +174,11 @@ function renderPromoItems(promo) {
 
 
 function createPromoCard(promo, item) {
-  const categoriaSlug   = (item.categoryName || 'generico').replace(/\s+/g, '-');
-  const imageUrl        = item.imageUrl || 'img/default-food.jpg';
-    const prezzoOriginale = Number(item.prezzoOriginale ?? 0);
-  const sconto          = Number(item.scontoPercentuale ?? 0);
-  const prezzoFinale    = Number(item.prezzoScontato ?? (prezzoOriginale * (1 - sconto / 100)));
+  const categoriaSlug = (item.categoryName || 'generico').replace(/\s+/g, '-');
+  const imageUrl = item.imageUrl || 'img/default-food.jpg';
+  const prezzoOriginale = Number(item.prezzoOriginale ?? 0);
+  const sconto = Number(item.scontoPercentuale ?? 0);
+  const prezzoFinale = Number(item.prezzoScontato ?? (prezzoOriginale * (1 - sconto / 100)));
 
   return `
     <div class="col-sm-6 col-lg-4 all ${categoriaSlug}">
@@ -189,7 +188,7 @@ function createPromoCard(promo, item) {
         </div>
         <div class="detail-box">
           <h5>${item.nome}</h5>
-<p>${item.categoryName || ''}</p>
+          <p>${item.categoryName || ''}</p>
           <div class="mt-2">
             <div class="d-flex align-items-center gap-2">
               <span class="text-muted text-decoration-line-through">€${prezzoOriginale.toFixed(2)}</span>
@@ -347,15 +346,15 @@ function showEventsPopup(events) {
         <h2>Eventi in programma</h2>
         <div class="events-list">
           ${events.map(event => {
-            const poster = event.posterUrl || event.poster_url || 'images/default-event.jpg';
-            const dateLabel = new Date(event.data).toLocaleString('it-IT', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              hour: '2-digit',
-              minute: '2-digit'
-            });
-            return `
+    const poster = event.posterUrl || event.poster_url || 'images/default-event.jpg';
+    const dateLabel = new Date(event.data).toLocaleString('it-IT', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    return `
               <div class="event-item">
                 <div class="event-info">
                   <h3>${event.titolo}</h3>
@@ -372,7 +371,7 @@ function showEventsPopup(events) {
                 </div>
               </div>
             `;
-          }).join('')}
+  }).join('')}
         </div>
       </div>
     </div>
@@ -396,7 +395,7 @@ function showEventsPopup(events) {
   });
 
   // Calibra dinamicamente l'altezza della locandina per evitare barre di scorrimento
-  function adjustEventPosters(){
+  function adjustEventPosters() {
     document.querySelectorAll('#eventsPopupOverlay .event-item').forEach(item => {
       const poster = item.querySelector('.event-poster img');
       const container = item.querySelector('.event-poster');
@@ -405,7 +404,7 @@ function showEventsPopup(events) {
         poster.style.width = '100%';
         container.style.height = 'auto';
       }
-    }); 
+    });
   }
 
   function closeEventsPopup() {
@@ -417,7 +416,7 @@ function showEventsPopup(events) {
       sessionStorage.setItem('eventsPopupShown', 'true');
     }
   }
-  
+
   requestAnimationFrame(() => {
     const popup = document.getElementById('eventsPopupOverlay');
     if (popup) popup.classList.add('visible');
@@ -480,7 +479,7 @@ async function navigateToEventRegistration(eventId, dateISO) {
 async function checkAndShowEvents() {
   // Controlla se il popup è già stato mostrato
   if (sessionStorage.getItem('eventsPopupShown')) return;
-  
+
   try {
     const res = await fetch(EVENTS_API);
     if (!res.ok) throw new Error(res.statusText);
@@ -503,16 +502,16 @@ async function loadEventsForRegistration(selectedDate = null) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(res.statusText);
     const events = await res.json();
-    
+
     const select = document.getElementById('eventSelect');
     const noEventsMessage = document.getElementById('noEventsMessage');
-    
+
     if (!select) return;
-    
+
     // Svuota il select e nascondi il messaggio
     select.innerHTML = '<option value="">Seleziona un evento</option>';
     if (noEventsMessage) noEventsMessage.classList.add('d-none');
-    
+
     if (events && events.length > 0) {
       events.forEach(event => {
         const option = document.createElement('option');
@@ -520,7 +519,7 @@ async function loadEventsForRegistration(selectedDate = null) {
         option.textContent = `${event.titolo} - ${new Date(event.data).toLocaleDateString('it-IT')}`;
         select.appendChild(option);
       });
-      
+
       // Mostra la sezione eventi
       const eventSection = document.getElementById('eventRegistrationSection');
       if (eventSection) {
@@ -530,11 +529,11 @@ async function loadEventsForRegistration(selectedDate = null) {
       // Mostra messaggio se non ci sono eventi
       if (noEventsMessage) {
         noEventsMessage.classList.remove('d-none');
-        noEventsMessage.textContent = selectedDate 
+        noEventsMessage.textContent = selectedDate
           ? `Non ci sono eventi programmati per il ${new Date(selectedDate).toLocaleDateString('it-IT')}`
           : 'Non ci sono eventi programmati al momento';
       }
-      
+
       // Nascondi la sezione eventi
       const eventSection = document.getElementById('eventRegistrationSection');
       if (eventSection) {
@@ -550,7 +549,7 @@ async function loadEventsForRegistration(selectedDate = null) {
 // === INIZIO BLOCCO PER IL MENU DINAMICO ===
 function renderFilters(categories) {
   if (!filters) return;
-  
+
   filters.innerHTML = '';
 
   if (featuredIds.length > 0) {
@@ -587,7 +586,7 @@ function renderAllergens(allergens = []) {
 }
 function renderMenuItems(filter = 'In Evidenza') {
   if (!container) return;
-  
+
   container.innerHTML = '';
   let toShow;
 
@@ -601,13 +600,17 @@ function renderMenuItems(filter = 'In Evidenza') {
     const imageUrl = item.imageUrl || 'images/default-food.jpg'; // fallback unificato come nelle promo
 
     const card = `
+<<<<<<< HEAD
 <div class="col-sm-6 col-lg-4 all ${item.categoryName}">
+=======
+  <div class="col-sm-6 col-lg-4 all ${item.categoryName}">
+>>>>>>> 0ec54d1 (Fix Frontend-Backend compatibility (categoryName) and apply Premium Design)
     <div class="box">
       <div class="img-box position-relative">
         <img src="${imageUrl}" alt="${item.titolo}" />
         ${featuredIds.includes(item.id)
-          ? '<span class="badge badge-warning position-absolute" style="top:8px;right:8px;">★</span>'
-          : ''}
+        ? '<span class="badge badge-warning position-absolute" style="top:8px;right:8px;">★</span>'
+        : ''}
       </div>
       <div class="detail-box">
         <h5>${item.titolo}</h5>
@@ -635,7 +638,7 @@ async function loadMenu() {
       fetch(MENU_API),
       fetch(MENU_HIGHLIGHTS)
     ]);
-    
+
     const [menuData, highlights] = await Promise.all([
       menuRes.json(),
       evRes.json()
@@ -674,14 +677,48 @@ function getYear() {
 const form = document.getElementById('reservationForm');
 const dateInput = document.getElementById('resDate');
 const timeSelect = document.getElementById('resTime');
+
 const msgBox = document.getElementById('resMessage');
+
+// === VALIDAZIONE CAMPI TELEFONO ===
+(function initPhoneValidation() {
+  const ALLOWED_PATTERN = /[^\d\s()+-]/g; // tutto ciò che NON è permesso
+  const MIN_DIGITS = 6;                     // minimo ragionevole di cifre
+
+  function sanitize(el) {
+    if (!el) return;
+    el.addEventListener('input', () => {
+      const cleaned = el.value.replace(ALLOWED_PATTERN, '');
+      if (cleaned !== el.value) el.value = cleaned; // blocca lettere e simboli strani
+    });
+    el.addEventListener('blur', () => {
+      const digits = (el.value || '').replace(/\D/g, '');
+      if (el.value && digits.length < MIN_DIGITS) {
+        // Feedback nativo del browser
+        el.setCustomValidity('Inserisci un numero valido (minimo 6 cifre; consentiti + ( ) - e spazi).');
+        el.reportValidity();
+      } else {
+        el.setCustomValidity('');
+      }
+    });
+  }
+
+  // aggancia a tutti i campi telefono presenti
+  ['resPhone', 'eventPhone', 'lookupPhone'].forEach(id => sanitize(document.getElementById(id)));
+
+  // utilità riusabile nei submit
+  window.__isValidPhone = function (value) {
+    const digits = (value || '').replace(/\D/g, '');
+    return !!value && digits.length >= MIN_DIGITS;
+  };
+})();
 
 if (dateInput) {
   dateInput.addEventListener('change', async () => {
     const formattedDate = dateInput.value;
     debugPrint("Data scelta change(): " + formattedDate);
     if (!timeSelect) return;
-    
+
     timeSelect.innerHTML = `<option value="" disabled selected>Caricamento…</option>`;
     if (window.$ && $.fn.niceSelect) {
       $('select').niceSelect('update');
@@ -689,12 +726,12 @@ if (dateInput) {
 
     try {
       const formattedDate = dateInput.value; // già corretto (yyyy-MM-dd)
-    
+
       const [slotsRes, eventsRes] = await Promise.all([
         fetch(`${RES_TIMES_API}/${formattedDate}`),
         fetch(`${EVENTS_API}?date=${formattedDate}`)
       ]);
-      
+
       const [slots, events] = await Promise.all([
         slotsRes.ok ? slotsRes.json() : [],
         eventsRes.ok ? eventsRes.json() : []
@@ -712,11 +749,11 @@ if (dateInput) {
       // Gestione eventi
       const eventSelect = document.getElementById('eventSelect');
       const noEventsMessage = document.getElementById('noEventsMessage');
-      
+
       if (eventSelect) {
         eventSelect.innerHTML = '<option value="">Seleziona un evento</option>';
         if (noEventsMessage) noEventsMessage.classList.add('d-none');
-        
+
         if (events && events.length > 0) {
           events.forEach(event => {
             const option = document.createElement('option');
@@ -724,7 +761,7 @@ if (dateInput) {
             option.textContent = `${event.titolo} - ${new Date(event.data).toLocaleDateString('it-IT')}`;
             eventSelect.appendChild(option);
           });
-          
+
           // Mostra la sezione eventi
           const eventSection = document.getElementById('eventRegistrationSection');
           if (eventSection) {
@@ -736,7 +773,7 @@ if (dateInput) {
             noEventsMessage.classList.remove('d-none');
             noEventsMessage.textContent = `Non ci sono eventi programmati per il ${new Date(dateInput.value).toLocaleDateString('it-IT')}`;
           }
-          
+
           // Nascondi la sezione eventi
           const eventSection = document.getElementById('eventRegistrationSection');
           if (eventSection) {
@@ -748,7 +785,7 @@ if (dateInput) {
       timeSelect.innerHTML = `<option value="" disabled>Errore nel caricamento</option>`;
       console.error(err);
     }
-    
+
     if (window.$ && $.fn.niceSelect) {
       $('select').niceSelect('update');
     }
@@ -759,12 +796,20 @@ if (dateInput) {
 if (form) {
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    // PHONE VALIDATION GUARD
+    const phoneField = document.getElementById('resPhone');
+    if (!window.__isValidPhone(phoneField?.value)) {
+      alert('Numero di telefono non valido. Usa solo cifre e i simboli + ( ) - e spazi; minimo 6 cifre.');
+      phoneField && phoneField.focus();
+      return;
+    }
     if (!msgBox) return;
-    
+
     msgBox.textContent = '';
 
     const payload = {
       name: document.getElementById('resName').value.trim(),
+      surname: document.getElementById('resSurname').value.trim(),
       phone: document.getElementById('resPhone').value.trim(),
       date: dateInput.value,
       time: timeSelect.value,
@@ -776,10 +821,10 @@ if (form) {
     try {
       const res = await fetch(RES_API, {   // NOTA: usa RES_API, NON RES_USER_API
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      
+
 
       if (res.status === 201 || res.ok) {
         const dto = await res.json();
@@ -789,9 +834,10 @@ if (form) {
         const eventId = document.getElementById('eventSelect')?.value;
         if (eventId) {
           await registerForEvent(
-            eventId, 
-            payload.name, 
-            payload.phone, 
+            eventId,
+            payload.name,
+            payload.surname,
+            payload.phone,
             payload.people,
             payload.note
           );
@@ -830,11 +876,17 @@ if (lookupForm) {
   lookupForm.addEventListener('submit', async e => {
     e.preventDefault();
     if (!reservationsList) return;
-    
+
     reservationsList.innerHTML = '';
 
     const phone = lookupPhoneInput.value.trim();
-    if (!phone) return;
+    if (!window.__isValidPhone(phone)) {
+      reservationsList.innerHTML = `
+        <li class="list-group-item text-danger">
+          Inserisci un numero di telefono valido (minimo 6 cifre; consentiti + ( ) - e spazi).
+        </li>`;
+      return;
+    }
 
     try {
       const res = await fetch(`${RES_USER_API}/${encodeURIComponent(phone)}`);
@@ -868,9 +920,9 @@ if (lookupForm) {
           `;
           reservationsList.appendChild(li);
         });
-        
-    }   
-  } catch (err) {
+
+      }
+    } catch (err) {
       reservationsList.innerHTML = `
         <li class="list-group-item text-danger">
           Errore durante il recupero delle prenotazioni.
@@ -899,10 +951,10 @@ if (reservationsList) {
         if (isEvent) {
           url = `${EVENTS_API}/${encodeURIComponent(eventId)}/unregister/${encodeURIComponent(phone)}`;
         }
-              } else {
-                url = `${RES_API}/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`;
-              }
-      
+      } else {
+        url = `${RES_API}/${encodeURIComponent(phone)}/${encodeURIComponent(date)}`;
+      }
+
 
       const res = await fetch(url, options);
       if (!res.ok) throw new Error(res.statusText);
@@ -936,13 +988,25 @@ const eventForm = document.getElementById('eventForm');
 if (eventForm) {
   eventForm.addEventListener('submit', async e => {
     e.preventDefault();
+    // PHONE VALIDATION GUARD
+    const phoneField = document.getElementById('eventPhone');
+    if (!window.__isValidPhone(phoneField?.value)) {
+      alert('Numero di telefono non valido. Usa solo cifre e i simboli + ( ) - e spazi; minimo 6 cifre.');
+      phoneField && phoneField.focus();
+      return;
+    }
     const payload = {
       name: document.getElementById('eventName').value.trim(),
+      surname: document.getElementById('eventSurname').value.trim(),
       phone: document.getElementById('eventPhone').value.trim(),
       partecipanti: parseInt(document.getElementById('eventPartecipanti').value, 10),
       note: document.getElementById('eventNote').value.trim()
     };
     const eventId = document.getElementById('eventSelect').value;
+    if (!eventId) {
+      alert('Seleziona un evento prima di procedere.');
+      return;
+    }
     try {
       const res = await fetch(`${EVENT_REGISTER}/${eventId}/register`, {
         method: 'POST',
@@ -974,7 +1038,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 function myMap() {
   const mapElement = document.getElementById("googleMap");
   if (!mapElement) return;
-  
+
   const coords = { lat: 41.1250, lng: 16.7819 };
   const map = new google.maps.Map(mapElement, {
     center: coords,
@@ -1004,7 +1068,7 @@ function myMap() {
 function showToast(message, isError = false) {
   const toast = document.getElementById('customToast');
   if (!toast) return;
-  
+
   toast.textContent = message;
   toast.style.backgroundColor = isError ? '#dc3545' : '#28a745';
   toast.classList.add('show');
@@ -1014,12 +1078,12 @@ function showToast(message, isError = false) {
   }, 3000);
 }
 
-async function registerForEvent(eventId, name, phone, partecipanti = 1, note = "") {
+async function registerForEvent(eventId, name, surname, phone, partecipanti = 1, note = "") {
   try {
     const res = await fetch(`${EVENT_REGISTER}/${eventId}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, phone, partecipanti, note })
+      body: JSON.stringify({ name, surname, phone, partecipanti, note })
     });
 
     if (!res.ok) {
@@ -1028,7 +1092,7 @@ async function registerForEvent(eventId, name, phone, partecipanti = 1, note = "
       return;
     }
     alert("Iscrizione evento confermata!");
-    
+
   } catch (err) {
     console.error(err);
     showToast("Errore di connessione", true);
@@ -1082,19 +1146,19 @@ document.addEventListener('DOMContentLoaded', () => {
   checkAndShowEvents();
   loadEventsForRegistration();
 });
-  $(function(){
-    $("#heroCarousel").owlCarousel({
-      items: 1,
-      loop: true,
-      autoplay: true,
-      autoplayTimeout: 4000,
-      autoplayHoverPause: false,
-      animateOut: "fadeOut",
-      autoplaySpeed: 700,
-      dots: false,
-      nav: false
-    });
+$(function () {
+  $("#heroCarousel").owlCarousel({
+    items: 1,
+    loop: true,
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayHoverPause: false,
+    animateOut: "fadeOut",
+    autoplaySpeed: 700,
+    dots: false,
+    nav: false
   });
+});
 
 function togglePromotionsVisibility(hasPromos) {
   const section = document.getElementById('promotionsSection');
