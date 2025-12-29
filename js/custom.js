@@ -1010,10 +1010,36 @@ if (eventForm) {
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error(await res.text());
-      alert("Iscrizione all'evento confermata!");
+      const data = await res.json();
+
+      Swal.fire({
+        title: 'Prenotazione Confermata!',
+        html: `
+          <div style="text-align: left; font-size: 1.1rem; line-height: 1.6;">
+            <p><strong>Evento:</strong> ${data.event.titolo}</p>
+            <p><strong>Data:</strong> ${new Date(data.event.data).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+            <p><strong>Nome:</strong> ${data.name} ${data.surname}</p>
+            <p><strong>Partecipanti:</strong> ${data.partecipanti}</p>
+            ${data.note ? `<p><strong>Note:</strong> ${data.note}</p>` : ''}
+            <br>
+            <p style="text-align:center; font-weight:bold; color:var(--primary);">Ti aspettiamo!</p>
+          </div>
+        `,
+        icon: 'success',
+        confirmButtonText: 'Ottimo!',
+        confirmButtonColor: '#D4AF37',
+        background: '#fff',
+        color: '#333'
+      });
+
       eventForm.reset();
     } catch (err) {
-      alert(`Errore: ${err.message}`);
+      Swal.fire({
+        title: 'Errore',
+        text: err.message,
+        icon: 'error',
+        confirmButtonColor: '#d33'
+      });
     }
   });
 }
