@@ -600,11 +600,7 @@ function renderMenuItems(filter = 'In Evidenza') {
     const imageUrl = item.imageUrl || 'images/default-food.jpg'; // fallback unificato come nelle promo
 
     const card = `
-<<<<<<< HEAD
-<div class="col-sm-6 col-lg-4 all ${item.categoryName}">
-=======
   <div class="col-sm-6 col-lg-4 all ${item.categoryName}">
->>>>>>> 0ec54d1 (Fix Frontend-Backend compatibility (categoryName) and apply Premium Design)
     <div class="box">
       <div class="img-box position-relative">
         <img src="${imageUrl}" alt="${item.titolo}" />
