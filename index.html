@@ -10,10 +10,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <!-- Site Metas -->
   <meta name="keywords" content="" />
-<meta name="description" content="Corner Giovinazzo: hamburger gourmet, panini artigianali e birre selezionate in Piazza Duomo 58. Vieni a trovarci o scopri il menu.">  <meta name="author" content="" />
+  <meta name="description"
+    content="Corner Giovinazzo: hamburger gourmet, panini artigianali e birre selezionate in Piazza Duomo 58. Vieni a trovarci o scopri il menu.">
+  <meta name="author" content="" />
   <link rel="shortcut icon" href="images/272101.jpeg" type="">
 
-<title>Corner Giovinazzo – Hamburgeria & Pub | Panini e Birre Artigianali</title>
+  <title>Corner Giovinazzo – Hamburgeria & Pub | Panini e Birre Artigianali</title>
 
   <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -319,29 +321,32 @@
         <!-- TikTok Embed -->
         <div class="col-md-6 mb-4">
           <div class="tiktok-box text-center">
-            <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@cornergiovinazzo"
-              data-unique-id="cornergiovinazzo" data-embed-type="creator" style="max-width: 780px; min-width: 288px;">
-              <section>
-                <a target="_blank" href="https://www.tiktok.com/@cornergiovinazzo?refer=creator_embed">
-                  @cornergiovinazzo
-                </a>
-              </section>
-            </blockquote>
+            <!-- TikTok Placeholder (Gestito da JS) -->
+            <div id="tiktok-placeholder" class="social-placeholder">
+              <i class="fa fa-music"></i>
+              <p>Abilita i contenuti "Social" per vedere TikTok.</p>
+              <button class="btn-enable-social" onclick="window.enableSocialConsent()">Visualizza contenuto</button>
+            </div>
+            <div id="tiktok-embed-container"></div>
           </div>
         </div>
 
         <!-- Instagram Embed -->
         <div class="col-md-6 mb-4 text-center">
-          <iframe src="https://www.instagram.com/corner_giovinazzo/embed" width="400" height="480" frameborder="0"
-            scrolling="no" allowtransparency="true">
-          </iframe>
+          <!-- Instagram Placeholder (Gestito da JS) -->
+          <div id="instagram-placeholder" class="social-placeholder">
+            <i class="fa fa-instagram"></i>
+            <p>Abilita i contenuti "Social" per vedere Instagram.</p>
+            <button class="btn-enable-social" onclick="window.enableSocialConsent()">Visualizza contenuto</button>
+          </div>
+          <div id="instagram-embed-container"></div>
           <br>
         </div>
       </div>
     </div>
   </section>
 
-  <script async src="https://www.tiktok.com/embed.js"></script>
+  <!-- TikTok Script rimosso (caricato dinamicamente se c'è consenso) -->
   <!-- end about section -->
 
   <!-- book section -->
@@ -388,7 +393,31 @@
                 </select>
               </div>
               <div class="mb-3">
-                <textarea id="resNote" class="form-control" placeholder="Note (opzionali)"></textarea>
+                <textarea id="resNote" class="form-control"
+                  placeholder="Note (opzionali) - Inserisci solo info utili, evita dati sanitari/sensibili."></textarea>
+              </div>
+
+              <!-- Allergeni (Facoltativo) -->
+              <div class="mb-3">
+                <textarea id="resAllergens" class="form-control"
+                  placeholder="Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare."></textarea>
+              </div>
+              <div id="resAllergenConsentContainer" class="mb-3 form-check text-left d-none"
+                style="padding-left: 2.5rem;">
+                <input type="checkbox" class="form-check-input" id="resAllergenConsent"
+                  style="transform: scale(1.2); margin-left: -1.8rem;">
+                <label class="form-check-label" for="resAllergenConsent" style="font-size: 0.85rem; margin-left: 5px;">
+                  Acconsento al trattamento dei dati relativi alla salute (allergeni) esclusivamente per la gestione
+                  della prenotazione in sicurezza.
+                </label>
+              </div>
+              <div class="mb-4 form-check text-left" style="padding-left: 2.5rem;">
+                <input type="checkbox" class="form-check-input" id="privacyCheck"
+                  style="transform: scale(1.5); margin-left: -1.8rem;">
+                <label class="form-check-label" for="privacyCheck" style="font-size: 0.9rem; margin-left: 5px;">
+                  Ho letto e accetto la <a href="privacy.html" target="_blank"
+                    style="text-decoration: underline; color: #D4AF37;">Privacy Policy</a>.
+                </label>
               </div>
               <div class="btn_box text-center">
                 <button type="submit" class="btn">Prenota</button>
@@ -416,6 +445,22 @@
               <div class="mb-3">
                 <textarea id="eventNote" class="form-control" placeholder="Note"></textarea>
               </div>
+
+              <!-- Allergeni (Facoltativo) -->
+              <div class="mb-3">
+                <textarea id="eventAllergens" class="form-control"
+                  placeholder="Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare."></textarea>
+              </div>
+              <div id="eventAllergenConsentContainer" class="mb-3 form-check text-left d-none"
+                style="padding-left: 2.5rem;">
+                <input type="checkbox" class="form-check-input" id="eventAllergenConsent"
+                  style="transform: scale(1.2); margin-left: -1.8rem;">
+                <label class="form-check-label" for="eventAllergenConsent"
+                  style="font-size: 0.85rem; margin-left: 5px;">
+                  Acconsento al trattamento dei dati relativi alla salute (allergeni) esclusivamente per la gestione
+                  dell'evento in sicurezza.
+                </label>
+              </div>
               <div class="mb-3">
                 <select id="eventSelect" class="form-control" required>
                   <option value="">Seleziona un evento</option>
@@ -423,6 +468,14 @@
                 <div id="noEventsMessage" class="alert alert-info d-none"></div>
               </div>
               <div id="postiDisponibili" class="text-muted mb-3"></div>
+              <div class="mb-4 form-check text-left" style="padding-left: 2.5rem;">
+                <input type="checkbox" class="form-check-input" id="eventPrivacyCheck"
+                  style="transform: scale(1.5); margin-left: -1.8rem;">
+                <label class="form-check-label" for="eventPrivacyCheck" style="font-size: 0.9rem; margin-left: 5px;">
+                  Ho letto e accetto la <a href="privacy.html" target="_blank"
+                    style="text-decoration: underline; color: #D4AF37;">Privacy Policy</a>.
+                </label>
+              </div>
               <div class="btn_box text-center">
                 <button type="submit" class="btn">Iscriviti</button>
               </div>
@@ -548,7 +601,11 @@
       </div>
       <div class="footer-info text-center mt-4">
         <p>
-          &copy; <span id="displayYear"></span> Corner Hamburgeria — Tutti i diritti riservati.
+          &copy; <span id="displayYear"></span> Corner Hamburgeria — Tutti i diritti riservati.<br>
+          <a href="privacy.html" style="color: inherit; text-decoration: underline;">Privacy Policy</a> |
+          <a href="privacy.html" style="color: inherit; text-decoration: underline;">Privacy Policy</a> |
+          <a href="cookie.html" style="color: inherit; text-decoration: underline;">Cookie Policy</a> |
+          <a href="#" id="openPrivacySettings" style="color: inherit; text-decoration: underline;">Gestisci Consensi</a>
         </p>
       </div>
     </div>
@@ -557,6 +614,41 @@
 
   <!-- Toast Notification -->
   <div id="customToast"></div>
+
+  <!-- GDPR Consent Modal -->
+  <div id="consentModalOverlay" class="consent-modal-overlay">
+    <div class="consent-modal">
+      <h3>Impostazioni Privacy</h3>
+      <p>Questo sito utilizza dati per gestire le prenotazioni e contenuti esterni (social). Scegli cosa autorizzare.
+      </p>
+
+      <div class="consent-options">
+
+        <!-- Obbligatorio per prenotare -->
+        <div class="consent-option">
+          <input type="checkbox" id="consentBooking">
+          <div>
+            <label for="consentBooking">Trattamento Dati Prenotazioni</label>
+            <span class="note">Necessario per prenotare un tavolo.</span>
+          </div>
+        </div>
+
+        <!-- Facoltativo per Social -->
+        <div class="consent-option">
+          <input type="checkbox" id="consentSocial">
+          <div>
+            <label for="consentSocial">Contenuti Social (Instagram/TikTok)</label>
+            <span class="note">Abilita la visualizzazione di foto e video embeddati.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="consent-buttons">
+        <button id="btnSaveConsent" class="btn-primary-consent">Salva preferenze</button>
+      </div>
+    </div>
+  </div>
 
   <!-- jQery -->
   <script src="js/jquery-3.4.1.min.js"></script>

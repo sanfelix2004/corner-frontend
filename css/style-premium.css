@@ -1976,3 +1976,176 @@ a:focus {
   background: transparent;
   line-height: 1.2;
 }
+/* =========================
+   GDPR Consent Modal 
+   ========================= */
+.consent-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Sfondo scuro per focus */
+    z-index: 9999;
+    display: none; /* Nascosto di default */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.consent-modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.consent-modal {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    text-align: left;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.consent-modal h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.consent-modal p {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.consent-options {
+    margin-bottom: 25px;
+}
+
+.consent-option {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.consent-option input[type="checkbox"] {
+    margin-right: 12px;
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+    accent-color: #D4AF37; /* Gold */
+    cursor: pointer;
+}
+
+.consent-option label {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+}
+
+.consent-option .note {
+    display: block;
+    font-size: 0.8rem;
+    color: #777;
+    font-weight: normal;
+    margin-top: 3px;
+}
+
+.consent-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-secondary-flat {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: #555;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary-flat:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-primary-consent {
+    background: #D4AF37;
+    border: none;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary-consent:hover {
+    background: #B4941F;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   Social Placeholder 
+   ========================= */
+.social-placeholder {
+    background: #f1f1f1;
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+}
+
+.social-placeholder i {
+    font-size: 2.5rem;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.social-placeholder p {
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    max-width: 300px;
+}
+
+.btn-enable-social {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-enable-social:hover {
+    background: #000;
+}

@@ -1,8 +1,8 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-//const BASE_URL = "http://localhost:8080";
-const BASE_URL = "https://corner-pub-backend.onrender.com";
+const BASE_URL = "http://localhost:8080";
+//const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
 // 📌 MENU & PROMOZIONI
@@ -477,6 +477,13 @@ async function navigateToEventRegistration(eventId, dateISO) {
 }
 
 async function checkAndShowEvents() {
+  // 1. Pagina Check (No alert su privacy/cookie)
+  const path = window.location.pathname;
+  if (path.includes('privacy.html') || path.includes('cookie.html')) return;
+
+  // 2. GDPR Check (Se manca il consenso, aspetta. Sarà chiamato da saveConsent)
+  if (localStorage.getItem('consent.booking') === null) return;
+
   // Controlla se il popup è già stato mostrato
   if (sessionStorage.getItem('eventsPopupShown')) return;
 
@@ -803,6 +810,37 @@ if (form) {
 
     msgBox.textContent = '';
 
+    // Privacy Check Guard
+    const privacyCheck = document.getElementById('privacyCheck');
+    if (!privacyCheck || !privacyCheck.checked) {
+      Swal.fire({
+        title: 'Attenzione',
+        text: 'Devi accettare la Privacy Policy per poter prenotare.',
+        icon: 'warning',
+        confirmButtonColor: '#D4AF37'
+      });
+      return;
+    }
+
+    // Allergen Guard
+    const allergensInput = document.getElementById('resAllergens');
+    const allergensConsentCheck = document.getElementById('resAllergenConsent');
+    const allergensVal = allergensInput ? allergensInput.value.trim() : '';
+    let allergensConsent = false;
+
+    if (allergensVal.length > 0) {
+      if (!allergensConsentCheck || !allergensConsentCheck.checked) {
+        Swal.fire({
+          title: 'Consenso Necessario',
+          text: 'Se inserisci allergeni/intolleranze, devi acconsentire al trattamento di questi dati sensibili.',
+          icon: 'warning',
+          confirmButtonColor: '#D4AF37'
+        });
+        return;
+      }
+      allergensConsent = true;
+    }
+
     const payload = {
       name: document.getElementById('resName').value.trim(),
       surname: document.getElementById('resSurname').value.trim(),
@@ -810,7 +848,10 @@ if (form) {
       date: dateInput.value,
       time: timeSelect.value,
       people: parseInt(document.getElementById('resPeople').value, 10),
-      note: document.getElementById('resNote').value.trim()
+      note: document.getElementById('resNote').value.trim(),
+      privacyAccepted: true,
+      allergensNote: allergensVal || null,
+      allergensConsent: allergensConsent
     };
     debugPrint("Data inviata nel payload submit(): " + payload.date);
 
@@ -824,7 +865,33 @@ if (form) {
 
       if (res.status === 201 || res.ok) {
         const dto = await res.json();
-        alert(`Prenotazione confermata per il ${dto.date} alle ${dto.time}.`);
+
+        // Formattazione data e ora per il messaggio
+        const dateObj = new Date(dto.date);
+        const dateStr = dateObj.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        // Rimuovi i secondi se presenti nell'orario
+        const timeStr = (dto.time || '').substring(0, 5);
+
+        Swal.fire({
+          title: 'Prenotazione Confermata!',
+          html: `
+            <div style="text-align: left; font-size: 1.1rem; line-height: 1.6;">
+              <p><strong>Data:</strong> ${dateStr}</p>
+              <p><strong>Ora:</strong> ${timeStr}</p>
+              <p><strong>Nome:</strong> ${payload.name} ${payload.surname}</p>
+              <p><strong>Ospiti:</strong> ${payload.people}</p>
+              ${payload.note ? `<p><strong>Note:</strong> ${payload.note}</p>` : ''}
+              ${payload.allergensNote ? `<p><strong>Allergeni:</strong> ${payload.allergensNote}</p>` : ''}
+              <br>
+              <p style="text-align:center; font-weight:bold; color:var(--primary);">Ti aspettiamo!</p>
+            </div>
+          `,
+          icon: 'success',
+          confirmButtonText: 'Ottimo!',
+          confirmButtonColor: '#D4AF37',
+          background: '#fff',
+          color: '#333'
+        });
 
         // Registrazione evento se selezionato
         const eventId = document.getElementById('eventSelect')?.value;
@@ -854,10 +921,32 @@ if (form) {
         }
       } else {
         const err = await res.json();
-        alert(`Errore: ${err.message || res.statusText}`);
+
+        // Gestione specifica errore Privacy
+        if (res.status === 422 && err.code === 'PRIVACY_NOT_ACCEPTED') {
+          Swal.fire({
+            title: 'Privacy Richiesta',
+            text: err.message,
+            icon: 'warning',
+            confirmButtonColor: '#D4AF37',
+            footer: '<a href="privacy.html" target="_blank">Leggi Informativa</a>'
+          });
+        } else {
+          Swal.fire({
+            title: 'Errore',
+            text: err.message || res.statusText,
+            icon: 'error',
+            confirmButtonColor: '#d33'
+          });
+        }
       }
     } catch (err) {
-      alert('Impossibile contattare il server.');
+      Swal.fire({
+        title: 'Errore',
+        text: 'Impossibile contattare il server.',
+        icon: 'error',
+        confirmButtonColor: '#d33'
+      });
       console.error(err);
     }
   });
@@ -991,12 +1080,47 @@ if (eventForm) {
       phoneField && phoneField.focus();
       return;
     }
+
+    // Privacy Check Guard (Event)
+    const eventPrivacyCheck = document.getElementById('eventPrivacyCheck');
+    if (!eventPrivacyCheck || !eventPrivacyCheck.checked) {
+      Swal.fire({
+        title: 'Attenzione',
+        text: 'Devi accettare la Privacy Policy per poter iscriverti all\'evento.',
+        icon: 'warning',
+        confirmButtonColor: '#D4AF37'
+      });
+      return;
+    }
+
+    // Allergen Guard (Event)
+    const eventAllergensInput = document.getElementById('eventAllergens');
+    const eventAllergensConsentCheck = document.getElementById('eventAllergenConsent');
+    const eventAllergensVal = eventAllergensInput ? eventAllergensInput.value.trim() : '';
+    let eventAllergensConsent = false;
+
+    if (eventAllergensVal.length > 0) {
+      if (!eventAllergensConsentCheck || !eventAllergensConsentCheck.checked) {
+        Swal.fire({
+          title: 'Consenso Necessario',
+          text: 'Se inserisci allergeni/intolleranze, devi acconsentire al trattamento di questi dati sensibili.',
+          icon: 'warning',
+          confirmButtonColor: '#D4AF37'
+        });
+        return;
+      }
+      eventAllergensConsent = true;
+    }
+
     const payload = {
       name: document.getElementById('eventName').value.trim(),
       surname: document.getElementById('eventSurname').value.trim(),
       phone: document.getElementById('eventPhone').value.trim(),
       partecipanti: parseInt(document.getElementById('eventPartecipanti').value, 10),
-      note: document.getElementById('eventNote').value.trim()
+      note: document.getElementById('eventNote').value.trim(),
+      privacyAccepted: true, // Aggiunto per GDPR
+      allergensNote: eventAllergensVal || null,
+      allergensConsent: eventAllergensConsent
     };
     const eventId = document.getElementById('eventSelect').value;
     if (!eventId) {
@@ -1021,6 +1145,7 @@ if (eventForm) {
             <p><strong>Nome:</strong> ${data.name} ${data.surname}</p>
             <p><strong>Partecipanti:</strong> ${data.partecipanti}</p>
             ${data.note ? `<p><strong>Note:</strong> ${data.note}</p>` : ''}
+            ${data.allergensNote ? `<p><strong>Allergeni:</strong> ${data.allergensNote}</p>` : ''}
             <br>
             <p style="text-align:center; font-weight:bold; color:var(--primary);">Ti aspettiamo!</p>
           </div>
@@ -1214,3 +1339,168 @@ function togglePromotionsVisibility(hasPromos) {
   const navPromoLi = document.querySelector('a.nav-link[href="#promotionsSection"]')?.closest('li');
   if (navPromoLi) navPromoLi.style.display = hasPromos ? '' : 'none';
 }
+// =========================
+// 🔒 GESTIONE CONSENSO GDPR
+// =========================
+const STORAGE_KEY_BOOKING = 'consent.booking';
+const STORAGE_KEY_SOCIAL = 'consent.social';
+const MODAL_OVERLAY = document.getElementById('consentModalOverlay');
+
+function initGDPR() {
+  const consentBooking = localStorage.getItem(STORAGE_KEY_BOOKING);
+  const consentSocial = localStorage.getItem(STORAGE_KEY_SOCIAL);
+
+  // Se manca una scelta, mostra modale
+  if (consentBooking === null || consentSocial === null) {
+    showConsentModal();
+  } else {
+    // Applica preferenze salvate
+    applyConsents(consentBooking === 'true', consentSocial === 'true');
+  }
+
+  // Pre-check form se già acconsentito
+  const privacyCheck = document.getElementById('privacyCheck');
+  if (privacyCheck && consentBooking === 'true') {
+    privacyCheck.checked = true;
+  }
+  const eventPrivacyCheck = document.getElementById('eventPrivacyCheck');
+  if (eventPrivacyCheck && consentBooking === 'true') {
+    eventPrivacyCheck.checked = true;
+  }
+}
+
+function showConsentModal() {
+  if (MODAL_OVERLAY) MODAL_OVERLAY.classList.add('show');
+}
+
+function hideConsentModal() {
+  if (MODAL_OVERLAY) MODAL_OVERLAY.classList.remove('show');
+}
+
+function saveConsent() {
+  const bookingChecked = document.getElementById('consentBooking').checked;
+  const socialChecked = document.getElementById('consentSocial').checked;
+
+  localStorage.setItem(STORAGE_KEY_BOOKING, bookingChecked);
+  localStorage.setItem(STORAGE_KEY_SOCIAL, socialChecked);
+
+  applyConsents(bookingChecked, socialChecked);
+  hideConsentModal();
+
+  // Ora che ha deciso, possiamo mostrare eventuali popup eventi/offerte
+  checkAndShowEvents();
+
+  // Aggiorna checkbox form se necessario
+  const privacyCheck = document.getElementById('privacyCheck');
+  if (privacyCheck && bookingChecked) {
+    privacyCheck.checked = true;
+  }
+  const eventPrivacyCheck = document.getElementById('eventPrivacyCheck');
+  if (eventPrivacyCheck && bookingChecked) {
+    eventPrivacyCheck.checked = true;
+  }
+
+  if (typeof showToast === 'function') {
+    showToast("Preferenze salvate!", false);
+  }
+}
+
+function applyConsents(booking, social) {
+  // Social: Carica o nascondi
+  if (social) {
+    loadSocialEmbeds();
+  }
+}
+
+function loadSocialEmbeds() {
+  // TikTok
+  const ttContainer = document.getElementById('tiktok-embed-container');
+  const ttPlaceholder = document.getElementById('tiktok-placeholder');
+  if (ttContainer && !ttContainer.innerHTML.trim()) {
+    ttContainer.innerHTML = `<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@cornergiovinazzo" data-unique-id="cornergiovinazzo" data-embed-type="creator" style="max-width: 780px; min-width: 288px;"> <section> <a target="_blank" href="https://www.tiktok.com/@cornergiovinazzo?refer=creator_embed"> @cornergiovinazzo </a> </section> </blockquote>`;
+
+    // Script creator manually to ensure execution
+    const script = document.createElement('script');
+    script.src = "https://www.tiktok.com/embed.js";
+    script.async = true;
+    ttContainer.appendChild(script);
+
+    if (ttPlaceholder) ttPlaceholder.style.display = 'none';
+  }
+
+  // Instagram
+  const igContainer = document.getElementById('instagram-embed-container');
+  const igPlaceholder = document.getElementById('instagram-placeholder');
+  if (igContainer && !igContainer.innerHTML.trim()) {
+    igContainer.innerHTML = `<iframe src="https://www.instagram.com/corner_giovinazzo/embed" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`;
+    if (igPlaceholder) igPlaceholder.style.display = 'none';
+  }
+}
+
+window.enableSocialConsent = function () {
+  localStorage.setItem(STORAGE_KEY_SOCIAL, 'true');
+  // Manteniamo il booking setting attuale
+  const booking = localStorage.getItem(STORAGE_KEY_BOOKING) === 'true';
+  applyConsents(booking, true);
+
+  // Aggiorna anche la checkbox nella modale se riaperta
+  const chk = document.getElementById('consentSocial');
+  if (chk) chk.checked = true;
+};
+
+// Bind button save
+const btnSave = document.getElementById('btnSaveConsent');
+if (btnSave) {
+  btnSave.addEventListener('click', saveConsent);
+}
+
+// Avvio
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Force Scroll to Top (User Preference)
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+
+  // 2. Init GDPR
+  initGDPR();
+
+  // 3. Bind Footer Privacy Settings Link
+  const openPrivacyBtn = document.getElementById('openPrivacySettings');
+  if (openPrivacyBtn) {
+    openPrivacyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showConsentModal();
+    });
+  }
+});
+
+// =========================
+// 🥗 GESTIONE ALLERGENI
+// =========================
+function setupAllergenLogic(inputId, consentContainerId, consentCheckboxId) {
+  const input = document.getElementById(inputId);
+  const container = document.getElementById(consentContainerId);
+  const checkbox = document.getElementById(consentCheckboxId);
+
+  if (!input || !container || !checkbox) return;
+
+  input.addEventListener('input', () => {
+    if (input.value.trim().length > 0) {
+      // Mostra checkbox
+      container.classList.remove('d-none');
+    } else {
+      // Nascondi checkbox e resetta
+      container.classList.add('d-none');
+      checkbox.checked = false;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Setup per Prenotazione Tavolo
+  setupAllergenLogic('resAllergens', 'resAllergenConsentContainer', 'resAllergenConsent');
+
+  // Setup per Registrazione Evento
+  setupAllergenLogic('eventAllergens', 'eventAllergenConsentContainer', 'eventAllergenConsent');
+});
