@@ -1,8 +1,8 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-//const BASE_URL = "http://localhost:8080";
-const BASE_URL = "https://corner-pub-backend.onrender.com";
+const BASE_URL = "http://localhost:8080";
+//const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
 // 📌 MENU & PROMOZIONI
@@ -411,7 +411,13 @@ function showEventsPopup(events) {
     const popup = document.getElementById('eventsPopupOverlay');
     if (popup) {
       popup.classList.add('hide');
-      setTimeout(() => popup.remove(), 300);
+      setTimeout(() => {
+        popup.remove();
+        // Mostra il popup Fantasanremo dopo la chiusura del popup eventi
+        if (!sessionStorage.getItem('fantasanremoPopupShown')) {
+          setTimeout(() => showFantasanremoPopup(), 500);
+        }
+      }, 300);
       document.body.classList.remove('no-scroll');
       sessionStorage.setItem('eventsPopupShown', 'true');
     }
@@ -428,6 +434,178 @@ function showEventsPopup(events) {
   window.addEventListener('orientationchange', adjustEventPosters);
 }
 
+// === POPUP FANTASANREMO ===
+function showFantasanremoPopup() {
+  // Inject styles for Fantasanremo popup
+  if (!document.getElementById('fantasanremoPopupStyles')) {
+    const styleTag = document.createElement('style');
+    styleTag.id = 'fantasanremoPopupStyles';
+    styleTag.textContent = `
+      .fantasanremo-popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .fantasanremo-popup-overlay.visible {
+        opacity: 1;
+      }
+      .fantasanremo-popup-overlay.hide {
+        opacity: 0;
+      }
+      .fantasanremo-popup-container {
+        position: relative;
+        max-width: 600px;
+        width: 90%;
+        background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+        border-radius: 30px;
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(139, 92, 246, 0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+      .fantasanremo-popup-overlay.visible .fantasanremo-popup-container {
+        transform: scale(1);
+      }
+      .fantasanremo-popup-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        line-height: 1;
+        padding: 0;
+      }
+      .fantasanremo-popup-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+      }
+      .fantasanremo-popup-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        animation: bounce 2s infinite;
+      }
+      .fantasanremo-popup-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 1rem;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+      .fantasanremo-popup-text {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+      .fantasanremo-popup-cta {
+        display: inline-block;
+        padding: 1.2rem 3rem;
+        font-size: 1.3rem;
+        font-weight: 700;
+        background: white;
+        color: #8B5CF6;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .fantasanremo-popup-cta:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      }
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      @media (max-width: 768px) {
+        .fantasanremo-popup-container {
+          padding: 2rem 1.5rem;
+        }
+        .fantasanremo-popup-title {
+          font-size: 2rem;
+        }
+        .fantasanremo-popup-text {
+          font-size: 1.1rem;
+        }
+        .fantasanremo-popup-cta {
+          font-size: 1.1rem;
+          padding: 1rem 2rem;
+        }
+      }
+    `;
+    document.head.appendChild(styleTag);
+  }
+
+  const modalHTML = `
+    <div id="fantasanremoPopupOverlay" class="fantasanremo-popup-overlay">
+      <div class="fantasanremo-popup-container">
+        <button id="closeFantasanremoPopupBtn" class="fantasanremo-popup-close" aria-label="Chiudi popup">&times;</button>
+        <div class="fantasanremo-popup-icon">🎤🏆</div>
+        <h2 class="fantasanremo-popup-title">Fantasanremo Corner Pub!</h2>
+        <p class="fantasanremo-popup-text">
+          Unisciti alla nostra lega ufficiale e vinci premi esclusivi! 
+          Partecipa al torneo più divertente dell'anno.
+        </p>
+        <a href="fantasanremo.html" class="fantasanremo-popup-cta">
+          Scopri di più
+        </a>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  document.body.classList.add('no-scroll');
+
+  const closeBtn = document.getElementById('closeFantasanremoPopupBtn');
+  const overlay = document.getElementById('fantasanremoPopupOverlay');
+
+  function closeFantasanremoPopup() {
+    if (overlay) {
+      overlay.classList.add('hide');
+      setTimeout(() => {
+        overlay.remove();
+        document.body.classList.remove('no-scroll');
+      }, 300);
+      sessionStorage.setItem('fantasanremoPopupShown', 'true');
+    }
+  }
+
+  closeBtn.addEventListener('click', closeFantasanremoPopup);
+
+  // Chiudi cliccando fuori dal popup
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeFantasanremoPopup();
+    }
+  });
+
+  // Mostra il popup con animazione
+  requestAnimationFrame(() => {
+    if (overlay) overlay.classList.add('visible');
+  });
+}
 
 /** Naviga alla scheda "Evento", imposta la data evento e pre-seleziona l'evento */
 async function navigateToEventRegistration(eventId, dateISO) {
