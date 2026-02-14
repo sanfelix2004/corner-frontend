@@ -413,10 +413,8 @@ function showEventsPopup(events) {
       popup.classList.add('hide');
       setTimeout(() => {
         popup.remove();
-        // Mostra il popup Fantasanremo dopo la chiusura del popup eventi
-        if (!sessionStorage.getItem('fantasanremoPopupShown')) {
-          setTimeout(() => showFantasanremoPopup(), 500);
-        }
+        // Mostra SEMPRE il popup Fantasanremo dopo la chiusura del popup eventi
+        setTimeout(() => showFantasanremoPopup(), 500);
       }, 300);
       document.body.classList.remove('no-scroll');
       sessionStorage.setItem('eventsPopupShown', 'true');
@@ -588,7 +586,7 @@ function showFantasanremoPopup() {
         overlay.remove();
         document.body.classList.remove('no-scroll');
       }, 300);
-      sessionStorage.setItem('fantasanremoPopupShown', 'true');
+      // Non salviamo più in sessionStorage per permettere di mostrarlo sempre
     }
   }
 
@@ -669,9 +667,19 @@ async function checkAndShowEvents() {
     const res = await fetch(EVENTS_API);
     if (!res.ok) throw new Error(res.statusText);
     const events = await res.json();
-    showEventsPopup(events);
+
+    // Se ci sono eventi, mostra il popup eventi (che poi mostrerà Fantasanremo)
+    if (events && events.length > 0) {
+      showEventsPopup(events);
+    } else {
+      // Se NON ci sono eventi, mostra direttamente il popup Fantasanremo
+      setTimeout(() => showFantasanremoPopup(), 500);
+      sessionStorage.setItem('eventsPopupShown', 'true');
+    }
   } catch (err) {
     console.error('Errore nel caricamento eventi:', err);
+    // In caso di errore, mostra comunque il popup Fantasanremo
+    setTimeout(() => showFantasanremoPopup(), 500);
   }
 }
 
