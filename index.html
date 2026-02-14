@@ -135,12 +135,12 @@
 <body>
 
   <div class="hero_area">
-    <div class="bg-box owl-carousel owl-theme" id="heroCarousel">
-      <div class="item"><img src="images/slide1.jpg" alt=""></div>
-      <div class="item"><img src="images/slide2.jpg" alt=""></div>
-      <div class="item"><img src="images/slide3.jpg" alt=""></div>
-      <div class="item"><img src="images/slide4.jpg" alt=""></div>
-      <div class="item"><img src="images/slide5.jpg" alt=""></div>
+    <div class="bg-box">
+      <video autoplay muted loop playsinline id="heroVideo">
+        <source src="images/hero-video.mp4" type="video/mp4">
+        <!-- Fallback to image if video not available -->
+        <img src="images/slide1.jpg" alt="Corner Pub">
+      </video>
     </div>
 
     <!-- header section strats -->
@@ -194,24 +194,41 @@
     <!-- end header section -->
     <!-- slider section -->
     <section class="slider_section">
-      <div id="customCarousel1" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="container">
-              <section class="slider_section">
-                <div class="detail-box">
-                  <h1>Corner <br> Hamburgeria</h1>
-                  <p>Panini, birre artigianali e tanto altro.</p>
-                  <div class="btn-box">
-                    <a href="#menu" class="btn1">Menu</a>
-                    <a href="#book" class="btn1">Prenota</a>
-                  </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="hero-card">
+              <div class="hero-card-glow"></div>
+              <div class="hero-card-content">
+                <div class="hero-icon">
+                  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 8L40 24H24L32 8Z" fill="#FFBE33" />
+                    <rect x="20" y="24" width="24" height="32" rx="2" fill="#FFBE33" opacity="0.8" />
+                    <circle cx="32" cy="40" r="6" fill="#fff" />
+                  </svg>
                 </div>
-              </section>
-
+                <h1 class="hero-title">
+                  <span class="hero-title-line">Corner</span>
+                  <span class="hero-title-line">Hamburgeria</span>
+                </h1>
+                <p class="hero-subtitle">Panini, birre artigianali e tanto altro</p>
+                <div class="hero-actions">
+                  <a href="#menu" class="hero-btn hero-btn-primary">
+                    <span>Menù</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                  <a href="#book" class="hero-btn hero-btn-secondary">
+                    <span>Prenota</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- altri item... -->
         </div>
       </div>
     </section>
