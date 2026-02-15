@@ -1027,16 +1027,47 @@ if (form) {
       allergensConsent = true;
     }
 
+    const nameVal = document.getElementById('resName').value.trim();
+    const surnameVal = document.getElementById('resSurname').value.trim();
+    const phoneVal = document.getElementById('resPhone').value.trim();
+    const peopleVal = document.getElementById('resPeople').value.trim();
+    const noteVal = document.getElementById('resNote').value.trim();
+
+    // Validation against default values
+    if (nameVal === 'Nome' || nameVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci il tuo nome.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+    if (surnameVal === 'Cognome' || surnameVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci il tuo cognome.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+    if (phoneVal === 'Telefono' || phoneVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci un numero di telefono.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+    // Check note is not "Note"
+    const finalNote = (noteVal === 'Note') ? '' : noteVal;
+
+    // Allergen handling
+    const finalAllergens = (allergensVal === 'Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.') ? '' : allergensVal;
+
+    // Check people
+    if (peopleVal === 'Persone' || peopleVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci il numero di persone.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+
     const payload = {
-      name: document.getElementById('resName').value.trim(),
-      surname: document.getElementById('resSurname').value.trim(),
-      phone: document.getElementById('resPhone').value.trim(),
+      name: nameVal,
+      surname: surnameVal,
+      phone: phoneVal,
       date: dateInput.value,
       time: timeSelect.value,
-      people: parseInt(document.getElementById('resPeople').value, 10),
-      note: document.getElementById('resNote').value.trim(),
+      people: parseInt(peopleVal, 10),
+      note: finalNote,
       privacyAccepted: true,
-      allergensNote: allergensVal || null,
+      allergensNote: finalAllergens || null,
       allergensConsent: allergensConsent
     };
     debugPrint("Data inviata nel payload submit(): " + payload.date);
@@ -1298,14 +1329,44 @@ if (eventForm) {
       eventAllergensConsent = true;
     }
 
+    const nameVal = document.getElementById('eventName').value.trim();
+    const surnameVal = document.getElementById('eventSurname').value.trim();
+    const phoneVal = document.getElementById('eventPhone').value.trim();
+    const peopleVal = document.getElementById('eventPartecipanti').value.trim();
+    const noteVal = document.getElementById('eventNote').value.trim();
+
+    // Validation against default values
+    if (nameVal === 'Nome' || nameVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci il tuo nome.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+    if (surnameVal === 'Cognome' || surnameVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci il tuo cognome.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+    if (phoneVal === 'Telefono' || phoneVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci un numero di telefono.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+    // Check note is not "Note"
+    const finalNote = (noteVal === 'Note') ? '' : noteVal;
+
+    // Allergen handling
+    const finalAllergens = (eventAllergensVal === 'Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.') ? '' : eventAllergensVal;
+
+    if (peopleVal === 'Partecipanti' || peopleVal === '') {
+      Swal.fire({ title: 'Errore', text: 'Inserisci il numero di partecipanti.', icon: 'error', confirmButtonColor: '#d33' });
+      return;
+    }
+
     const payload = {
-      name: document.getElementById('eventName').value.trim(),
-      surname: document.getElementById('eventSurname').value.trim(),
-      phone: document.getElementById('eventPhone').value.trim(),
-      partecipanti: parseInt(document.getElementById('eventPartecipanti').value, 10),
-      note: document.getElementById('eventNote').value.trim(),
+      name: nameVal,
+      surname: surnameVal,
+      phone: phoneVal,
+      partecipanti: parseInt(peopleVal, 10),
+      note: finalNote,
       privacyAccepted: true, // Aggiunto per GDPR
-      allergensNote: eventAllergensVal || null,
+      allergensNote: finalAllergens || null,
       allergensConsent: eventAllergensConsent
     };
     const eventId = document.getElementById('eventSelect').value;
@@ -1478,6 +1539,85 @@ document.addEventListener('DOMContentLoaded', () => {
   loadMenu();
   checkAndShowEvents();
   loadEventsForRegistration();
+
+  // === GESTIONE CAMPI PRE-COMPILATI (Simil-Placeholder) ===
+  function initDefaultValue(id, defaultValue) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Al caricamento, se vuoto (o reset), rimetti default
+    if (!el.value) el.value = defaultValue;
+
+    el.addEventListener('focus', () => {
+      if (el.value === defaultValue) {
+        el.value = '';
+      }
+    });
+
+    el.addEventListener('blur', () => {
+      if (!el.value.trim()) {
+        el.value = defaultValue;
+      }
+    });
+  }
+
+  // Applica ai campi Reservation
+  ['resName', 'eventName'].forEach(id => initDefaultValue(id, 'Nome'));
+  ['resSurname', 'eventSurname'].forEach(id => initDefaultValue(id, 'Cognome'));
+  ['resPhone', 'eventPhone'].forEach(id => initDefaultValue(id, 'Telefono'));
+
+  // Funzione per campi che devono diventare numerici
+  function initNumberField(id, defaultValue) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Al caricamento, se vuoto (o reset), rimetti default
+    if (!el.value) el.value = defaultValue;
+
+    el.addEventListener('focus', () => {
+      if (el.value === defaultValue) {
+        el.value = '';
+      }
+      el.type = 'number';
+      el.min = '1';
+    });
+
+    el.addEventListener('blur', () => {
+      if (!el.value.trim()) {
+        el.type = 'text';
+        el.value = defaultValue;
+      }
+    });
+  }
+
+  initNumberField('resPeople', 'Persone');
+  initNumberField('eventPartecipanti', 'Partecipanti');
+
+  // Note e Allergeni
+  ['resNote', 'eventNote'].forEach(id => initDefaultValue(id, 'Note'));
+  const allergenText = 'Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.';
+  ['resAllergens', 'eventAllergens'].forEach(id => initDefaultValue(id, allergenText));
+
+  // Gestione speciale Data (perché cambia type)
+  const rd = document.getElementById('resDate');
+  if (rd) {
+    if (!rd.value) rd.value = "Data";
+    rd.addEventListener('focus', function () {
+      if (this.value === 'Data') {
+        this.value = '';
+      }
+      this.type = 'date';
+      // Se min non è settato, mettilo a oggi
+      if (!this.min) this.min = new Date().toISOString().split('T')[0];
+    });
+    rd.addEventListener('blur', function () {
+      if (!this.value) {
+        this.type = 'text';
+        this.value = 'Data';
+      }
+    });
+  }
+
 });
 $(function () {
   $("#heroCarousel").owlCarousel({

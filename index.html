@@ -381,35 +381,33 @@
           <div id="tavoloForm" class="form_container">
             <form id="reservationForm">
               <div class="mb-3">
-                <input id="resName" type="text" class="form-control" placeholder="Nome" required />
+                <input id="resName" type="text" class="form-control" value="Nome" required />
               </div>
               <div class="mb-3">
-                <input id="resSurname" type="text" class="form-control" placeholder="Cognome" required />
+                <input id="resSurname" type="text" class="form-control" value="Cognome" required />
               </div>
               <div class="mb-3">
-                <input id="resPhone" type="text" class="form-control" placeholder="Numero di telefono" required />
+                <input id="resPhone" type="text" class="form-control" value="Telefono" required />
               </div>
               <div class="mb-3">
-                <input id="resPeople" type="number" class="form-control" placeholder="Numero di persone" min="1"
-                  required />
+                <input id="resPeople" type="text" class="form-control" value="Persone" required />
               </div>
               <div class="mb-3">
-                <input id="resDate" type="date" class="form-control" required min="">
+                <input id="resDate" type="text" class="form-control" value="Data" required min="">
               </div>
               <div class="mb-3">
                 <select id="resTime" class="form-control nice-select wide" required>
-                  <option value="" disabled selected>Seleziona ora</option>
+                  <option value="" disabled selected>Ora</option>
                 </select>
               </div>
               <div class="mb-3">
-                <textarea id="resNote" class="form-control"
-                  placeholder="Note (opzionali) - Inserisci solo info utili, evita dati sanitari/sensibili."></textarea>
+                <textarea id="resNote" class="form-control">Note</textarea>
               </div>
 
               <!-- Allergeni (Facoltativo) -->
               <div class="mb-3">
-                <textarea id="resAllergens" class="form-control"
-                  placeholder="Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare."></textarea>
+                <textarea id="resAllergens"
+                  class="form-control">Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.</textarea>
               </div>
               <div id="resAllergenConsentContainer" class="mb-3 form-check text-left d-none"
                 style="padding-left: 2.5rem;">
@@ -439,26 +437,25 @@
           <div id="eventoForm" class="form_container d-none">
             <form id="eventForm">
               <div class="mb-3">
-                <input id="eventName" type="text" class="form-control" placeholder="Nome" required />
+                <input id="eventName" type="text" class="form-control" value="Nome" required />
               </div>
               <div class="mb-3">
-                <input id="eventSurname" type="text" class="form-control" placeholder="Cognome" required />
+                <input id="eventSurname" type="text" class="form-control" value="Cognome" required />
               </div>
               <div class="mb-3">
-                <input id="eventPhone" type="text" class="form-control" placeholder="Telefono" required />
+                <input id="eventPhone" type="text" class="form-control" value="Telefono" required />
               </div>
               <div class="mb-3">
-                <input id="eventPartecipanti" type="number" class="form-control" placeholder="Partecipanti" min="1"
-                  value="1" required />
+                <input id="eventPartecipanti" type="text" class="form-control" value="Partecipanti" required />
               </div>
               <div class="mb-3">
-                <textarea id="eventNote" class="form-control" placeholder="Note"></textarea>
+                <textarea id="eventNote" class="form-control">Note</textarea>
               </div>
 
               <!-- Allergeni (Facoltativo) -->
               <div class="mb-3">
-                <textarea id="eventAllergens" class="form-control"
-                  placeholder="Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare."></textarea>
+                <textarea id="eventAllergens"
+                  class="form-control">Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.</textarea>
               </div>
               <div id="eventAllergenConsentContainer" class="mb-3 form-check text-left d-none"
                 style="padding-left: 2.5rem;">
