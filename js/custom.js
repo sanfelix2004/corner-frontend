@@ -735,7 +735,7 @@ async function loadEventsForRegistration(selectedDate = null) {
     }
   } catch (err) {
     console.error('Errore nel caricamento eventi:', err);
-    showToast('Errore nel caricamento degli eventi', true);
+    // showToast('Errore nel caricamento degli eventi', true); // Suppressed as per user request
   }
 }
 
