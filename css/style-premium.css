@@ -152,9 +152,9 @@ a:focus {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-      rgba(0, 0, 0, 0.6) 0%,
-      rgba(0, 0, 0, 0.5) 30%,
-      rgba(0, 0, 0, 0.3) 60%,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.6) 30%,
+      rgba(0, 0, 0, 0.4) 60%,
       rgba(255, 225, 168, 0.3) 85%,
       rgba(255, 225, 168, 0.6) 95%,
       #FFE1A8 100%);
@@ -429,7 +429,8 @@ a:focus {
   transform: translate(-50%, -50%);
   z-index: 10;
   width: 100%;
-  max-width: 550px;
+  max-width: 450px;
+  width: 90%;
 }
 
 .slider_section .row {
@@ -441,24 +442,11 @@ a:focus {
 .hero-card {
   position: relative;
   text-align: center;
-  padding: 4px;
+  /* Removed solid gradient background and padding that blocked transparency */
   border-radius: 30px;
-  background: linear-gradient(135deg, #FFBE33, #FF6B6B, #4ECDC4, #FFBE33);
-  background-size: 300% 300%;
-  animation: gradientShift 8s ease infinite;
 }
 
-@keyframes gradientShift {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-}
+/* Removed keyframes gradientShift as it is no longer used for the background */
 
 .hero-card-glow {
   position: absolute;
@@ -475,12 +463,18 @@ a:focus {
 }
 
 .hero-card-content {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(20px);
-  border-radius: 26px;
-  padding: 40px 35px;
+  /* Increased transparency (0.55) and added premium border */
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 190, 51, 0.5);
+  /* Gold border semi-transparent */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-radius: 20px;
+  padding: 40px 30px;
   position: relative;
   z-index: 1;
+  transition: all 0.4s ease;
 }
 
 /* Hero Icon */
@@ -511,7 +505,7 @@ a:focus {
 
 /* Hero Title */
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   font-weight: 900;
   margin-bottom: 15px;
   line-height: 1.1;
@@ -593,6 +587,26 @@ a:focus {
   justify-content: center;
   flex-wrap: wrap;
   animation: fadeIn 0.8s ease 0.6s backwards;
+}
+
+@media (max-width: 576px) {
+  .hero-card-content {
+    padding: 30px 20px;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Hero Buttons */
