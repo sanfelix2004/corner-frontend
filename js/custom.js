@@ -1,7 +1,7 @@
 // =========================
 // 🌐 CONFIGURAZIONE BASE
 // =========================
-//const BASE_URL = "http://localhost:8080";
+//const BASE_URL = "http://localhost:8082";
 const BASE_URL = "https://corner-pub-backend.onrender.com";
 
 // =========================
@@ -26,6 +26,8 @@ const RES_USER_API = `${RES_API}/user`;                      // Prenotazioni di 
 const RES_TIMES_API = `${RES_API}/available`;                 // Orari disponibili
 const RES_LOOKUP_API = `${RES_API}`;                           // Lookup per telefono/data
 const RES_NOTIFY_API = `${RES_API}/notify`;                    // Notifica contatto staff
+
+const ALLERGEN_PLACEHOLDER = 'Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.';
 // =========================
 // 📌 RIFERIMENTI DOM MENU
 // =========================
@@ -832,7 +834,8 @@ if (form) {
     // Allergen Guard
     const allergensInput = document.getElementById('resAllergens');
     const allergensConsentCheck = document.getElementById('resAllergenConsent');
-    const allergensVal = allergensInput ? allergensInput.value.trim() : '';
+    const allergensRaw = allergensInput ? allergensInput.value.trim() : '';
+    const allergensVal = (allergensRaw === ALLERGEN_PLACEHOLDER) ? '' : allergensRaw;
     let allergensConsent = false;
 
     if (allergensVal.length > 0) {
@@ -871,7 +874,7 @@ if (form) {
     const finalNote = (noteVal === 'Note') ? '' : noteVal;
 
     // Allergen handling
-    const finalAllergens = (allergensVal === 'Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.') ? '' : allergensVal;
+    const finalAllergens = allergensVal;
 
     // Check people
     if (peopleVal === 'Persone' || peopleVal === '') {
@@ -1134,7 +1137,8 @@ if (eventForm) {
     // Allergen Guard (Event)
     const eventAllergensInput = document.getElementById('eventAllergens');
     const eventAllergensConsentCheck = document.getElementById('eventAllergenConsent');
-    const eventAllergensVal = eventAllergensInput ? eventAllergensInput.value.trim() : '';
+    const eventAllergensRaw = eventAllergensInput ? eventAllergensInput.value.trim() : '';
+    const eventAllergensVal = (eventAllergensRaw === ALLERGEN_PLACEHOLDER) ? '' : eventAllergensRaw;
     let eventAllergensConsent = false;
 
     if (eventAllergensVal.length > 0) {
@@ -1173,7 +1177,7 @@ if (eventForm) {
     const finalNote = (noteVal === 'Note') ? '' : noteVal;
 
     // Allergen handling
-    const finalAllergens = (eventAllergensVal === 'Allergeni / Intolleranze alimentari (opzionale) - Inserisci SOLO se necessario per la sicurezza alimentare.') ? '' : eventAllergensVal;
+    const finalAllergens = eventAllergensVal;
 
     if (peopleVal === 'Partecipanti' || peopleVal === '') {
       Swal.fire({ title: 'Errore', text: 'Inserisci il numero di partecipanti.', icon: 'error', confirmButtonColor: '#d33' });
@@ -1633,7 +1637,8 @@ function setupAllergenLogic(inputId, consentContainerId, consentCheckboxId) {
   if (!input || !container || !checkbox) return;
 
   input.addEventListener('input', () => {
-    if (input.value.trim().length > 0) {
+    const val = input.value.trim();
+    if (val.length > 0 && val !== ALLERGEN_PLACEHOLDER) {
       // Mostra checkbox
       container.classList.remove('d-none');
     } else {
